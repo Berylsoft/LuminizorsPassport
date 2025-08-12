@@ -22,7 +22,7 @@ export class RequestHelper {
   }
 
   protected async handleResponse<T>(
-    response: RequestHelper.CommonResponse<T>
+    response: RequestHelper.CommonResponse<T>,
   ): Promise<T> {
     const requestId = response.headers["x-request-id"] as string;
     const bypassLoginRetry = !!response.config[RequestHelper.bypassLoginRetry];
@@ -37,7 +37,7 @@ export class RequestHelper {
         if (userStore.isLoggedIn) {
           userStore.id = "";
           void platform.showToast({
-            title: "登录失效，请重新登录",
+            title: "登录失效, 请重新登录",
           });
         } else {
           void platform.showToast({
@@ -49,18 +49,18 @@ export class RequestHelper {
         // retry request
         config[RequestHelper.bypassLoginRetry] = true;
         const res = await axios<T, RequestHelper.CommonResponse<T>>(
-          response.config
+          response.config,
         );
         return await this.handleResponse(res);
       } else {
         if (isErrorInfo(data))
           void platform.showToast({
-            title: `请求失败:${data.Err.msg}(${data.Err.code.toString()})\n${requestId})`,
+            title: `请求失败:${data.Err.msg}(${data.Err.code.toString()})\n${requestId}`,
             duration: 3000,
           });
         else
           void platform.showToast({
-            title: `请求失败:${data}(${status.toString()})\n${requestId})`,
+            title: `请求失败:${data}(${status.toString()})\n${requestId}`,
             duration: 3000,
           });
         throw new RequestHelper.RequestError({ status, data, requestId });
@@ -101,22 +101,22 @@ export interface RequestHelper {
   get<T, D>(url: string, config?: RequestHelper.RequestConfig<D>): Promise<T>;
   delete<T, D>(
     url: string,
-    config?: RequestHelper.RequestConfig<D>
+    config?: RequestHelper.RequestConfig<D>,
   ): Promise<T>;
   post<T, D>(
     url: string,
     data?: D,
-    config?: RequestHelper.RequestConfig<D>
+    config?: RequestHelper.RequestConfig<D>,
   ): Promise<T>;
   patch<T, D>(
     url: string,
     data?: D,
-    config?: RequestHelper.RequestConfig<D>
+    config?: RequestHelper.RequestConfig<D>,
   ): Promise<T>;
   put<T, D>(
     url: string,
     data?: D,
-    config?: RequestHelper.RequestConfig<D>
+    config?: RequestHelper.RequestConfig<D>,
   ): Promise<T>;
 }
 
@@ -182,7 +182,7 @@ function defineProperty<T, K extends keyof T>(object: T, key: K, value: T[K]) {
 }
 
 const isSuccessResponse = <T>(
-  res: RequestHelper.CommonResponse<T>
+  res: RequestHelper.CommonResponse<T>,
 ): res is RequestHelper.SuccessResponse<T> => res.status === 200;
 const isErrorInfo = (res: unknown): res is RequestHelper.ErrorInfo =>
   // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition

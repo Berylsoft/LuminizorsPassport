@@ -84,7 +84,8 @@
         </template>
       </nut-cell>
     </view>
-    <view class="feedback">
+    <!-- temporary disable -->
+    <view v-show="false" class="feedback">
       <nut-cell
         is-link
         :round-radius="10"
@@ -109,7 +110,12 @@
       </nut-cell>
     </view>
     <view v-if="!userStore.isLoggedIn" class="logout">
-      <nut-cell is-link :round-radius="10" title="退出登录">
+      <nut-cell
+        is-link
+        :round-radius="10"
+        title="退出登录"
+        @click="() => (showSignOutDialog = true)"
+      >
         <template #icon>
           <Icon name="sign-out" />
         </template>
@@ -119,8 +125,16 @@
   <view>
     <About v-model="showAbout" />
     <Feedback v-model="showFeedback" />
-    <NotificationSetting v-model="showNotificationSetting"
-  /></view>
+    <NotificationSetting v-model="showNotificationSetting" />
+    <view>
+      <nut-dialog
+        v-model:visible="showSignOutDialog"
+        title="提示"
+        content="确定要退出登录吗?"
+        @ok="account.signOut"
+      />
+    </view>
+  </view>
 </template>
 
 <script lang="ts" setup>
@@ -139,8 +153,8 @@ const userStore = useUserStore();
 
 const showAbout = ref(false);
 const showFeedback = ref(false);
-
 const showNotificationSetting = ref(false);
+const showSignOutDialog = ref(false);
 </script>
 
 <style lang="scss">

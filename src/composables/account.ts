@@ -31,7 +31,7 @@ const login = async () => {
       icon: "error",
     });
     throw new Error(
-      `Login failed${err instanceof Error ? `: ${err.message}` : ""}`
+      `Login failed${err instanceof Error ? `: ${err.message}` : ""}`,
     );
   }
 };
@@ -49,4 +49,10 @@ const checkLoginStatus = async () => {
   return userStore.isLoggedIn;
 };
 
-export const useAccount = () => ({ checkLoginStatus, login });
+const signOut = async () => {
+  const userStore = useUserStore();
+  await API.revokeAllTokens();
+  userStore.id = "";
+};
+
+export const useAccount = () => ({ checkLoginStatus, login, signOut });
