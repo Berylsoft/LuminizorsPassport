@@ -19,6 +19,16 @@ export class RequestHelper {
       },
       validateStatus: (code) => code < 300 || code >= 400,
     });
+    this.axios.interceptors.response.use(undefined, (err) => {
+      const message = err instanceof Error ? err.message : "Unknown error";
+      void platform.showToast({
+        title: `请求失败: ${message}`,
+        duration: 3000,
+      });
+      return Promise.reject(
+        new RequestHelper.RequestError({ message, status: -1 }),
+      );
+    });
   }
 
   protected async handleResponse<T>(
@@ -32,38 +42,52 @@ export class RequestHelper {
       return data["Ok"];
     } else {
       const { status, data, config } = response;
-      if (status === 401 && !bypassLoginRetry) {
-        const userStore = useUserStore();
-        if (userStore.isLoggedIn) {
-          userStore.id = "";
-          void platform.showToast({
-            title: "登录失效, 请重新登录",
+      const url = new URL(config.url ?? "", config.baseURL).href;
+      if (status === 401) {
+        if (bypassLoginRetry) {
+          throw new RequestHelper.RequestError({
+            status,
+            data,
+            message: "Login required",
+            requestId,
+            url,
           });
         } else {
-          void platform.showToast({
-            title: "请先登录",
-            icon: "error",
-          });
-        }
+          const userStore = useUserStore();
+          if (userStore.isLoggedIn) {
+            userStore.id = "";
+            void platform.showToast({
+              title: "登录失效, 请重新登录",
+            });
+          } else {
+            void platform.showToast({
+              title: "请先登录",
+              icon: "error",
+            });
+          }
 
-        // retry request
-        config[RequestHelper.bypassLoginRetry] = true;
-        const res = await axios<T, RequestHelper.CommonResponse<T>>(
-          response.config,
-        );
-        return await this.handleResponse(res);
+          // retry request
+          config[RequestHelper.bypassLoginRetry] = true;
+          const res = await axios<T, RequestHelper.CommonResponse<T>>(
+            response.config,
+          );
+          return await this.handleResponse(res);
+        }
       } else {
-        if (isErrorInfo(data))
-          void platform.showToast({
-            title: `请求失败:${data.Err.msg}(${data.Err.code.toString()})\n${requestId}`,
-            duration: 3000,
-          });
-        else
-          void platform.showToast({
-            title: `请求失败:${data}(${status.toString()})\n${requestId}`,
-            duration: 3000,
-          });
-        throw new RequestHelper.RequestError({ status, data, requestId });
+        let message: string;
+        if (isErrorInfo(data)) message = data.Err.msg;
+        else message = data;
+        void platform.showToast({
+          title: `请求失败: ${message}(${status.toString()})\n${requestId}`,
+          duration: 3000,
+        });
+        throw new RequestHelper.RequestError({
+          data,
+          message,
+          status,
+          requestId,
+          url,
+        });
       }
     }
   }
@@ -123,8 +147,9 @@ export interface RequestHelper {
 export namespace RequestHelper {
   export class RequestError extends Error {
     public data: unknown;
-    public requestId: string;
     public status: number;
+    public requestId?: string;
+    public url?: string;
     constructor(
       options: RequestErrorOptions,
       ...params: Parameters<ErrorConstructor>
@@ -134,9 +159,10 @@ export namespace RequestHelper {
       this.name = "RequestError";
       this.message = options.message ?? "Request failed";
 
-      this.data = options.data ?? "";
-      this.requestId = options.requestId ?? "";
-      this.status = options.status ?? 200;
+      this.data = options.data ?? null;
+      this.requestId = options.requestId;
+      this.status = options.status;
+      this.url = options.url;
     }
   }
 
@@ -144,7 +170,8 @@ export namespace RequestHelper {
     message?: string;
     data?: unknown;
     requestId?: string;
-    status?: number;
+    status: number;
+    url?: string;
   }
 
   export interface Config {
