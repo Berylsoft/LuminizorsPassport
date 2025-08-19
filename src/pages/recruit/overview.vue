@@ -1,0 +1,474 @@
+<template>
+  <nut-cell class="project-overview" size="large" :round-radius="20">
+    <nut-space direction="vertical" fill :gutter="15">
+      <view class="banner">
+        <img class="banner-image" :src="img1" :alt="projectDetail.info.name" />
+      </view>
+      <view class="project-info">
+        <view>
+          <view class="project-name">
+            {{ projectDetail.info.name }}
+          </view>
+          <view class="end-time">
+            <span v-if="!isEnded">
+              离结束还有<nut-countdown
+                class="end-time-countdown"
+                :end-time="endTime.valueOf()"
+                format="DD天HH时"
+                @on-end="() => (isEnded = new Date() > endTime)"
+              />
+            </span>
+            <span v-else>已结束</span>
+          </view>
+        </view>
+        <view class="project-status">
+          <span class="status-text" :style="{ color: statusColor }">
+            {{ statusText }}
+          </span>
+          <span @click="refresh">
+            <Icon
+              class="refresh-button nut-icon-am-infinite"
+              :class="{ 'nut-icon-am-rotate': refreshing }"
+              name="arrow-clockwise"
+              :size="24"
+            />
+          </span>
+        </view>
+      </view>
+    </nut-space>
+  </nut-cell>
+  <nut-cell
+    v-if="detailCell.show"
+    class="detail-info"
+    :round-radius="20"
+    size="large"
+  >
+    <view class="title">
+      <Icon class="icon" :name="detailCell.icon" :size="20" />{{
+        detailCell.title
+      }}
+    </view>
+    <view class="content">
+      <template v-if="projectDetail.status === 'PreSubmitPassed'">
+        您通过了初审, 分配到
+        <nut-tag
+          v-for="group in groups"
+          :key="group"
+          class="group-tag"
+          :color="groupMapping[group].color"
+          round
+          >{{ groupMapping[group].text }}组</nut-tag
+        >
+      </template>
+      <template v-else-if="projectDetail.status === 'PreSubmitRejected'">
+        很遗憾, 您未能通过审核, 原因如下:
+        <view class="reason">{{
+          getReasonText(projectDetail.pre_submit_detail.Rejected.reason)
+        }}</view>
+      </template>
+      <template v-else-if="projectDetail.status === 'SubmitPassed'">
+        您已完成所有步骤, 恭喜您成为<nut-tag
+          v-for="group in groups"
+          :key="group"
+          class="group-tag"
+          :color="groupMapping[group].color"
+          round
+          >{{ groupMapping[group].text }}组</nut-tag
+        >成员
+      </template>
+      <template v-else-if="projectDetail.status === 'SubmitRejected'">
+        很遗憾, 您未能通过审核, 原因如下:
+        <view class="reason">{{
+          getReasonText(projectDetail.submit_detail.Rejected.reason)
+        }}</view>
+      </template>
+    </view>
+  </nut-cell>
+  <view class="join-steps">
+    <nut-steps direction="vertical" progress-dot :current="currentStep">
+      <nut-step title="报名" content="报名成功">1</nut-step>
+      <nut-step title="初审" :content="firstReviewStatus">2</nut-step>
+      <nut-step title="签署NDA" :content="NDAStatus"> 3 </nut-step>
+      <nut-step title="终审" :content="finalReviewStatus">4</nut-step>
+      <nut-step title="完成">5</nut-step>
+    </nut-steps>
+  </view>
+  <view class="action-button-container">
+    <nut-button
+      class="action-button"
+      :disabled="mainButton.disabled"
+      size="large"
+      type="primary"
+      @click="mainButton.action"
+      >{{ mainButton.text }}</nut-button
+    >
+  </view>
+  <view>
+    <NDA
+      v-model="showNDA"
+      :project="projectDetail"
+      :project-id="projectId"
+      @on-success="refresh"
+    />
+  </view>
+</template>
+
+<script setup lang="ts">
+import { computed, ref, watch } from "vue";
+import { onBeforeRouteUpdate, useRoute, useRouter } from "vue-router";
+import img1 from "@/assets/image/2025.jpg";
+import Icon from "@/components/Icon.vue";
+import NDA from "@/components/NDA.vue";
+import { useAPI } from "@/composables/api";
+import type { Review } from "@/types";
+
+const API = useAPI();
+const route = useRoute();
+const router = useRouter();
+
+const showNDA = ref(false);
+
+const projectId = ref(+route.params.id);
+const projectDetail = ref(await API.projectInfo({ pid: projectId.value }));
+onBeforeRouteUpdate(async (to, from) => {
+  if (to.params.id !== from.params.id) {
+    projectId.value = +to.params.id;
+    projectDetail.value = await API.projectInfo({ pid: projectId.value });
+  }
+});
+
+const endTime = computed(() => new Date(projectDetail.value.info.end_time));
+const isEnded = ref(new Date() > endTime.value);
+
+const refreshing = ref(false);
+const refresh = async () => {
+  try {
+    refreshing.value = true;
+    projectDetail.value = await API.projectInfo({ pid: projectId.value });
+  } finally {
+    refreshing.value = false;
+  }
+};
+
+const groups = computed(() => {
+  const groupInfo = projectDetail.value.pre_submit_detail?.["Passed"] as
+    | Review.GroupInfo
+    | undefined;
+  if (groupInfo) {
+    return Object.entries(groupInfo)
+      .filter(([, value]) => value)
+      .map(([key]) => key as keyof Review.GroupInfo);
+  } else {
+    return [];
+  }
+});
+const groupMapping: Record<
+  keyof Review.GroupInfo,
+  { text: string; color: string }
+> = {
+  lead: { text: "领唱", color: "red" },
+  choir: { text: "合唱", color: "darkblue" },
+  choir_harmony: { text: "合唱和声", color: "darkgreen" },
+  harmony: { text: "和声", color: "darkcyan" },
+};
+const openFirstReview = () =>
+  void router.push({
+    name: "first-review",
+    query: {
+      pid: projectId.value,
+    },
+  });
+const openFinalReview = () =>
+  void router.push({
+    name: "final-review",
+    query: {
+      pid: projectId.value,
+    },
+  });
+
+const getReasonText = (
+  reason: Review.FirstReview.RejectReason | Review.FinalReview.RejectReason,
+) => {
+  switch (reason) {
+    case "DeviceOrEnvironment":
+      return "录制设备或环境不过关";
+    case "RequirementNotMet":
+      return "不符合标准";
+    case "InvalidName":
+      return "名字不合适";
+    case "Other":
+      return projectDetail.value.submit_detail?.Rejected.detail ?? "其他原因";
+  }
+};
+
+const firstReviewStatus = computed(() => {
+  switch (projectDetail.value.status) {
+    case "Entered":
+      return "待提交";
+    case "PreSubmitted":
+      return "已提交, 审核中";
+    case "PreSubmitRejected":
+      return `初审未通过, ${getReasonText(projectDetail.value.pre_submit_detail.Rejected.reason)}`;
+    default:
+      return "初审通过";
+  }
+});
+const NDAStatus = computed(() => {
+  switch (projectDetail.value.nda_info) {
+    case null:
+      return "未签署半保密协议";
+    case "Agreed":
+      return "已签署半保密协议";
+    case "NoNda":
+      return "此项目暂无NDA";
+    default:
+      return "待签署半保密协议";
+  }
+});
+const finalReviewStatus = computed(() => {
+  switch (projectDetail.value.status) {
+    case "SubmitPassed":
+      return "终审通过";
+    case "SubmitRejected":
+      return `终审未通过, ${getReasonText(projectDetail.value.submit_detail.Rejected.reason)}`;
+    default:
+      return "待提交";
+  }
+});
+
+const statusText = ref("");
+const statusColor = ref("");
+const detailCell = ref({
+  show: false,
+  icon: "",
+  title: "",
+});
+const mainButton = ref<{
+  text: string;
+  disabled: boolean;
+  action?: () => void;
+}>({ text: "", disabled: false, action: () => {} });
+const currentStep = ref(1);
+
+watch(
+  () => projectDetail.value.status,
+  () => {
+    switch (projectDetail.value.status) {
+      case "Entered":
+        statusText.value = "已报名";
+        statusColor.value = "darkgrey";
+        detailCell.value.show = false;
+        mainButton.value = {
+          text: "上传初审信息",
+          disabled: false,
+          action: openFirstReview,
+        };
+        currentStep.value = 2;
+        break;
+
+      case "PreSubmitted":
+        statusText.value = "初审审核中";
+        statusColor.value = "var(--theme-color-dark)";
+        detailCell.value.show = false;
+        mainButton.value = {
+          text: "请耐心等待初审结果",
+          disabled: true,
+        };
+        currentStep.value = 2;
+        break;
+
+      case "PreSubmitRejected":
+        statusText.value = "初审未通过";
+        statusColor.value = "red";
+        detailCell.value = {
+          show: true,
+          icon: "warning",
+          title: "初审未通过",
+        };
+        mainButton.value = {
+          text: "重新上传初审信息",
+          action: openFirstReview,
+          disabled: false,
+        };
+        currentStep.value = 2;
+        break;
+
+      case "PreSubmitPassed":
+        if (projectDetail.value.nda_info["Pending"]) {
+          statusText.value = "待签署NDA";
+          statusColor.value = "orange";
+          mainButton.value = {
+            text: "查看半保密协议",
+            disabled: false,
+            action: () => (showNDA.value = true),
+          };
+          currentStep.value = 3;
+        } else {
+          statusText.value = "初审通过";
+          statusColor.value = "green";
+          mainButton.value = {
+            text: "查看项目详情",
+            disabled: false,
+            action: openFinalReview,
+          };
+          currentStep.value = 4;
+        }
+        detailCell.value = {
+          show: true,
+          icon: "info",
+          title: "初审已通过",
+        };
+        break;
+
+      case "Submitted":
+        statusText.value = "终审中";
+        statusColor.value = "var(--theme-color-dark)";
+        detailCell.value.show = false;
+        mainButton.value = {
+          text: "请耐心等待终审结果",
+          disabled: true,
+        };
+        currentStep.value = 4;
+        break;
+
+      case "SubmitRejected":
+        statusText.value = "终审未通过";
+        statusColor.value = "red";
+        detailCell.value = {
+          show: true,
+          icon: "warning",
+          title: "终审未通过",
+        };
+        mainButton.value = {
+          text: "重新上传终审信息",
+          disabled: false,
+          action: openFinalReview,
+        };
+        currentStep.value = 4;
+        break;
+
+      case "SubmitPassed": {
+        statusText.value = "终审通过";
+        statusColor.value = "green";
+        detailCell.value = {
+          show: true,
+          icon: "info",
+          title: "终审通过",
+        };
+        mainButton.value = {
+          text: "已完成所有流程",
+          disabled: true,
+        };
+        currentStep.value = 5;
+        break;
+      }
+    }
+  },
+  { immediate: true },
+);
+</script>
+
+<style lang="scss">
+.project-overview {
+  height: max-content;
+
+  .banner {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    .banner-image {
+      width: 100%;
+      height: auto;
+      border-radius: 20px;
+    }
+  }
+  .project-info {
+    display: flex;
+    flex-flow: row nowrap;
+    align-items: center;
+    justify-content: space-between;
+
+    .project-name {
+      font-size: 36px;
+      font-weight: bold;
+      color: var(--text-color-primary);
+    }
+    .end-time {
+      font-size: 26px;
+      color: var(--text-color-secondary);
+
+      .nut-countdown {
+        display: inline;
+        font-size: 26px;
+        color: var(--text-color-secondary);
+      }
+    }
+    .project-status {
+      padding: 0 20px;
+
+      .status-text {
+        font-size: 32px;
+        vertical-align: middle;
+      }
+      .refresh-button {
+        margin: 0 15px;
+        vertical-align: middle;
+        color: var(--text-color-secondary);
+        cursor: pointer;
+        --animate-delay: 0s;
+      }
+    }
+  }
+}
+
+.detail-info {
+  display: block;
+
+  .title {
+    color: var(--theme-color-dark);
+    font-size: 32px;
+    margin-bottom: 20px;
+
+    .icon {
+      margin-right: 10px;
+      vertical-align: middle;
+    }
+  }
+  .content {
+    .group-tag {
+      margin: 0 5px;
+    }
+    .reason {
+      color: var(--text-color-secondary);
+      font-weight: bold;
+    }
+  }
+}
+
+.join-steps {
+  margin: 40px;
+  --nut-steps-base-title-font-size: 36px;
+  --nut-steps-base-title-color: var(--text-color-primary);
+  --nut-steps-base-content-font-size: 26px;
+  --nut-steps-base-content-color: var(--text-color-secondary);
+  --nut-steps-base-title-margin-bottom: 5px;
+
+  .nut-step-content {
+    margin-bottom: 20px;
+  }
+}
+
+.action-button-container {
+  position: fixed;
+  left: 0;
+  bottom: 120px;
+  display: flex;
+  justify-content: center;
+  width: 100%;
+
+  .action-button {
+    width: 90%;
+  }
+}
+</style>

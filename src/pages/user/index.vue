@@ -40,7 +40,7 @@
     <view class="theme-selector">
       <nut-cell title="深色模式" :round-radius="10">
         <template #icon>
-          <Icon name="paint_brush" />
+          <Icon color="var(--theme-color-reverse)" name="paint_brush" />
         </template>
         <template #link>
           <nut-radio-group v-model="themeStore.theme" direction="horizontal">
@@ -80,7 +80,7 @@
         @click="() => (showNotificationSetting = true)"
       >
         <template #icon>
-          <Icon name="alert" />
+          <Icon color="var(--theme-color-reverse)" name="alert" />
         </template>
       </nut-cell>
     </view>
@@ -93,7 +93,7 @@
         @click="() => (showFeedback = true)"
       >
         <template #icon>
-          <Icon name="chat-help" />
+          <Icon color="var(--theme-color-reverse)" name="chat-help" />
         </template>
       </nut-cell>
     </view>
@@ -105,7 +105,7 @@
         @click="() => (showAbout = true)"
       >
         <template #icon>
-          <Icon name="info" />
+          <Icon color="var(--theme-color-reverse)" name="info" />
         </template>
       </nut-cell>
     </view>
@@ -117,7 +117,7 @@
         @click="() => (showSignOutDialog = true)"
       >
         <template #icon>
-          <Icon name="sign-out" />
+          <Icon color="var(--theme-color-reverse)" name="sign-out" />
         </template>
       </nut-cell>
     </view>

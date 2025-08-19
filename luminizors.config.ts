@@ -11,13 +11,16 @@ export const config: LuminizorsConfig = {
   appID: process.env.TARO_APP_ID,
   backendServer:
     process.env.LUMINIZORS_BACKEND_SERVER ?? "https://api.luminizors.com",
-  logo: Logo,
-  notification: {
-    templates: process.env.LUMINIZORS_NOTIFICATION_TEMPLATES?.split(",") || [],
-  },
   feedback: {
     groupQRCode: QRCode,
     groupID: "1047336844",
+  },
+  logo: Logo,
+  NDA: {
+    minReadingTime: 5,
+  },
+  notification: {
+    templates: process.env.LUMINIZORS_NOTIFICATION_TEMPLATES?.split(",") || [],
   },
 };
 
@@ -27,6 +30,9 @@ export interface LuminizorsConfig {
   appID: string;
   backendServer: string;
   logo: any;
+  NDA: {
+    minReadingTime: number;
+  };
   notification: {
     templates: string[];
   };

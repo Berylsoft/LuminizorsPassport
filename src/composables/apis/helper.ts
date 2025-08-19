@@ -22,7 +22,7 @@ export class RequestHelper {
     this.axios.interceptors.response.use(undefined, (err) => {
       const message = err instanceof Error ? err.message : "Unknown error";
       void platform.showToast({
-        title: `请求失败: ${message}`,
+        title: `请求失败:\n ${message}`,
         duration: 3000,
       });
       return Promise.reject(

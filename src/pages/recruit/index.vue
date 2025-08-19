@@ -1,33 +1,59 @@
 <template>
   <view>
     <view class="project-list">
-      <nut-backtop>
+      <nut-backtop :bottom="400" :distance="500">
         <template #content>
-          <nut-cell
-            v-for="project in projects"
-            :key="project.id"
-            center
-            class="project-cell"
-            is-link
-            :round-radius="20"
-            size="large"
-            @click="() => router.push({ path: `/recruit/${project.id}` })"
-          >
-            <template #title>
-              <span class="project-name">{{ project.name }}</span>
-            </template>
-            <template #desc>
-              <span class="joined-status">
-                <Icon
-                  class="icon"
-                  :color="project.joined ? 'green' : 'grey'"
-                  :name="project.joined ? 'checkmark-circle' : 'add-circle'"
-                  :size="20"
-                />
-                {{ project.joined ? "已加入" : "未加入" }}
-              </span>
-            </template>
-          </nut-cell>
+          <template v-if="loaded">
+            <nut-cell
+              v-for="project in projects"
+              :key="project.id"
+              center
+              class="project-cell"
+              is-link
+              :round-radius="20"
+              size="large"
+              @click="
+                () =>
+                  router.push({
+                    name: 'project-overview',
+                    params: { id: project.id },
+                  })
+              "
+            >
+              <template #title>
+                <span class="project-name">{{ project.name }}</span>
+              </template>
+              <template #desc>
+                <span class="joined-status">
+                  <Icon
+                    class="icon"
+                    :color="project.joined ? 'green' : 'grey'"
+                    :name="project.joined ? 'checkmark-circle' : 'add-circle'"
+                    :size="20"
+                  />
+                  {{ project.joined ? "已加入" : "可参加" }}
+                </span>
+              </template>
+            </nut-cell>
+          </template>
+          <template v-else>
+            <nut-cell
+              v-for="i in 6"
+              :key="i"
+              center
+              class="project-cell"
+              :round-radius="20"
+              size="large"
+            >
+              <nut-skeleton
+                width="80vh"
+                height="1.5vh"
+                animated
+                row="3"
+                round
+              />
+            </nut-cell>
+          </template>
         </template>
       </nut-backtop>
     </view>
@@ -36,22 +62,28 @@
 
 <script lang="ts" setup>
 import Icon from "@/components/Icon.vue";
-import { ListProjects, useAPI } from "@/composables/api";
+import { useAPI } from "@/composables/api";
+import { Project } from "@/types";
 import { onMounted, ref } from "vue";
 import { useRouter } from "vue-router";
 
 const API = useAPI();
 const router = useRouter();
 
-const projects = ref<ListProjects.ProjectInfo[]>([]);
+const projects = ref<Project.ProjectInfo[]>([]);
+const loaded = ref(false);
 onMounted(async () => {
-  projects.value = (await API.listProjects()).projects;
+  try {
+    projects.value = (await API.listProjects()).projects;
+  } finally {
+    loaded.value = true;
+  }
 });
 </script>
 
 <style lang="scss">
 .project-cell {
-  min-height: 200px;
+  min-height: 250px;
 
   .project-name {
     margin: 10%;

@@ -32,7 +32,7 @@ const config = useConfig();
   width: 500px;
 
   .name {
-    color: var(--text-color-primary);
+    color: var(--theme-color);
     font-size: 40px;
   }
   .version {

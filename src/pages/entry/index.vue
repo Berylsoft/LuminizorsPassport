@@ -85,11 +85,15 @@ onMounted(() => setTitleAndActivatedTab(route.path));
 
 <style lang="scss">
 .main {
-  width: 100%;
   height: 100%;
+  width: 100%;
+  background-color: var(--background-color);
+  --nut-primary-color: var(--theme-color);
+  --nut-primary-color-end: var(--theme-color-dark);
 }
 
 .content {
+  height: 100%;
   padding: 15px;
 }
 </style>
