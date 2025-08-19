@@ -61,6 +61,9 @@ const functions = ref([{ icon: "receipt", text: "征集", target: "recruit" }]);
 .anouncement {
   --nut-noticebar-background: var(--theme-color-light);
   --nut-noticebar-color: var(--theme-color-dark);
+  // for dark mode
+  --nut-dark-background2: var(--theme-color-dark);
+  --nut-dark-color: var(--theme-color-light);
 }
 
 .swiper {
