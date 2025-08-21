@@ -1,5 +1,6 @@
 <template class="notification-setting">
   <nut-popup
+    v-if="show"
     v-model:visible="show"
     pop-class="notification-setting-content"
     round

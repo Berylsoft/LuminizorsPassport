@@ -1,5 +1,6 @@
 <template class="about">
   <nut-popup
+    v-if="show"
     v-model:visible="show"
     pop-class="about-content"
     round

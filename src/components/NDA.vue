@@ -10,8 +10,8 @@
     <view class="nda-container">
       <nut-backtop :bottom="100" :right="40" :distance="200" height="50vh">
         <template #content>
-          <view class="content"
-            >{{ props.project.nda_info?.["Pending"] }}
+          <view class="content">
+            {{ props.project.nda_info?.["Pending"] }}
           </view>
         </template>
       </nut-backtop>

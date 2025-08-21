@@ -19,4 +19,12 @@
   --theme-color-reverse: var(--theme-color-light);
   --text-color-primary: #eee;
   --text-color-secondary: #bbb;
+
+  // overwrite styles of nut-backtop
+  .nut-backtop {
+    --nut-backtop-border-color: #333;
+    .nut-backtop-main {
+      color: #ccc;
+    }
+  }
 }

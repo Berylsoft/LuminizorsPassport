@@ -1,5 +1,6 @@
 <template class="feedback">
   <nut-popup
+    v-if="show"
     v-model:visible="show"
     pop-class="feedback-content"
     round

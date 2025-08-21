@@ -1,5 +1,6 @@
 <template class="login">
   <nut-popup
+    v-if="showLogin"
     v-model:visible="showLogin"
     pop-class="login-content"
     round

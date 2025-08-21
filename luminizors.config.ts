@@ -1,5 +1,4 @@
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
-/* eslint-disable @typescript-eslint/no-explicit-any */
 
 import { version } from "./package.json";
 import Logo from "@/assets/image/logo.png";
@@ -23,21 +22,3 @@ export const config: LuminizorsConfig = {
     templates: process.env.LUMINIZORS_NOTIFICATION_TEMPLATES?.split(",") || [],
   },
 };
-
-export interface LuminizorsConfig {
-  name: string;
-  version: string;
-  appID: string;
-  backendServer: string;
-  logo: any;
-  NDA: {
-    minReadingTime: number;
-  };
-  notification: {
-    templates: string[];
-  };
-  feedback: {
-    groupQRCode: any;
-    groupID: string;
-  };
-}

@@ -3,8 +3,9 @@ import { Review } from "./review";
 export namespace Project {
   export interface ProjectInfo {
     id: number;
-    joined: boolean;
     name: string;
+    joined: boolean;
+    ended: boolean;
   }
 
   export type ProjectDetail = ProjectDetailBased &

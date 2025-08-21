@@ -2,8 +2,10 @@
   <a></a>
   <view :class="['main', `theme-${themeStore.getCurrentTheme}`]">
     <nut-config-provider :theme="themeStore.getCurrentTheme">
-      <view class="content">
-        <router-view></router-view>
+      <view class="body">
+        <Suspense>
+          <router-view></router-view>
+        </Suspense>
       </view>
       <view class="tabbar">
         <nut-tabbar
@@ -57,19 +59,20 @@ watch(
   },
 );
 const navList = {
-  home: { path: "/", title: "首页", icon: "home" },
-  recruit: { path: "/recruit/", title: "征集", icon: "receipt" },
-  my: { path: "/user/", title: "我的", icon: "person-circle" },
+  home: { target: "home", title: "首页", icon: "home" },
+  recruit: { target: "recruit", title: "征集", icon: "receipt" },
+  my: { target: "user", title: "我的", icon: "person-circle" },
 };
 type NavItem = keyof typeof navList;
 const activatedTab = ref<NavItem | "">("");
-const tabSwitch = (item: { name: NavItem }) => router.push(navList[item.name]);
+const tabSwitch = (item: { name: NavItem }) =>
+  router.push({ name: navList[item.name].target });
 
 const setTitleAndActivatedTab = async (_path: string) => {
   activatedTab.value =
     (Object.entries(navList)
-      .sort((a, b) => a[1].path.length - b[1].path.length)
-      .findLast(([, { path }]) => _path.startsWith(path))?.[0] as
+      .sort((a, b) => a[1].target.length - b[1].target.length)
+      .findLast(([, { target }]) => _path.startsWith(`/${target}`))?.[0] as
       | NavItem
       | undefined) ?? "";
   await platform.setTitle(
@@ -92,8 +95,16 @@ onMounted(() => setTitleAndActivatedTab(route.path));
   --nut-primary-color-end: var(--theme-color-dark);
 }
 
-.content {
+.body {
   height: 100%;
   padding: 15px;
+  background-color: var(--background-color);
+}
+
+.nut-tabbar__placeholder {
+  display: block;
+  background-color: var(--background-color);
+  /* prettier-ignore */
+  height: 45Px !important;
 }
 </style>

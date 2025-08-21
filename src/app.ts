@@ -8,5 +8,6 @@ import "./assets/iconfont/iconfont.css";
 
 const pinia = createPinia().use(piniaPluginPersistedstate);
 const App = createApp({}).use(pinia).use(router);
+App.config.errorHandler = console.error;
 
 export default App;

@@ -5,7 +5,8 @@ import Recruit from "./pages/recruit/index.vue";
 import User from "./pages/user/index.vue";
 
 const routes: RouteRecordRaw[] = [
-  { name: "home", path: "/", component: Home },
+  { path: "/", redirect: "/home" },
+  { name: "home", path: "/home", component: Home },
   { name: "recruit", path: "/recruit/", component: Recruit },
   {
     name: "project-overview",
