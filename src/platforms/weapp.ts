@@ -26,12 +26,22 @@ export const setClipboard = async (text: string) => {
   });
 };
 
+export const getSystemTheme = () => Taro.getAppBaseInfo().theme ?? "light";
+
+export const onSystemThemeChange = (
+  callback: (theme: "light" | "dark") => void,
+) => {
+  Taro.onThemeChange(({ theme }) => {
+    callback(theme);
+  });
+};
+
 export const openSetting = (config?: {
   withSubscriptions?: boolean;
 }): Promise<OpenSettingResult> => Taro.openSetting(config);
 
 export const getNoticificationSubscribeStatus = async (
-  template: string
+  template: string,
 ): Promise<SubscribeStatus> => {
   const { subscriptionsSetting } = await Taro.getSetting({
     withSubscriptions: true,
@@ -48,7 +58,7 @@ export const getNoticificationSubscribeStatus = async (
 };
 
 export const subscribeNotification = async (
-  templates: string[]
+  templates: string[],
 ): Promise<SubscribeNotificationResult> => {
   const result = await Taro.requestSubscribeMessage({
     tmplIds: templates,
@@ -58,7 +68,7 @@ export const subscribeNotification = async (
     throw new Error(`${result.errMsg}(${result.errCode.toString()})`);
   } else {
     return Object.fromEntries(
-      templates.map((tmpl) => [tmpl, result[tmpl] === "accept"])
+      templates.map((tmpl) => [tmpl, result[tmpl] === "accept"]),
     );
   }
 };

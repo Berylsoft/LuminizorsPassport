@@ -45,6 +45,19 @@ export const setClipboard = async (text: string) => {
   await navigator.clipboard.writeText(text);
 };
 
+export const getSystemTheme = () =>
+  window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+
+export const onSystemThemeChange = (
+  callback: (theme: "light" | "dark") => void,
+) => {
+  window
+    .matchMedia("(prefers-color-scheme: dark)")
+    .addEventListener("change", (e) => {
+      callback(e.matches ? "dark" : "light");
+    });
+};
+
 /** @todo simulated setting UI */
 export const openSetting = async (config?: {
   withSubscriptions?: boolean;

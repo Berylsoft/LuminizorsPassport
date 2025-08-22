@@ -28,7 +28,14 @@ export default defineConfig<"vite">((merge) => {
     },
     sourceRoot: "src",
     outputRoot: "dist",
-    plugins: ["@tarojs/plugin-html"],
+    plugins: [
+      [
+        "@tarojs/plugin-html",
+        {
+          enableCookie: true,
+        },
+      ],
+    ],
     defineConstants: {},
     copy: {
       patterns: [],

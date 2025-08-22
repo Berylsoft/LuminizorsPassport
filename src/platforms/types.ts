@@ -6,12 +6,14 @@ export interface Platform {
   }): Promise<void>;
   setTitle(title: string): Promise<void>;
   setClipboard(text: string): Promise<void>;
+  getSystemTheme(): "light" | "dark";
+  onSystemThemeChange(callback: (theme: "light" | "dark") => void): void;
   openSetting(config?: {
     withSubscriptions?: boolean;
   }): Promise<OpenSettingResult>;
   getNoticificationSubscribeStatus(template: string): Promise<SubscribeStatus>;
   subscribeNotification(
-    templates: string[]
+    templates: string[],
   ): Promise<SubscribeNotificationResult>;
   login(): Promise<string>;
 }
