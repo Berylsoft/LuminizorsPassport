@@ -44,7 +44,7 @@
                         class="action-icon"
                         color="var(--text-color-secondary)"
                         name="chevron-right"
-                        size="24"
+                        :size="48"
                       />
                     </template>
                     <template v-else-if="!project.ended">
@@ -119,13 +119,8 @@ const showJoinProject = ref(false);
 const projectToJoin = ref<number | undefined>();
 const projectNameToJoin = ref("");
 
-const projects = ref<Project.ProjectInfo[]>([
-  { id: 1, name: "Test Project", joined: true, ended: false },
-  { id: 2, name: "Test Project2", joined: true, ended: true },
-  { id: 3, name: "Test Project3", joined: false, ended: false },
-  { id: 4, name: "Test Project4", joined: false, ended: true },
-]);
-const loaded = ref(true);
+const projects = ref<Project.ProjectInfo[]>([]);
+const loaded = ref(false);
 onMounted(async () => {
   try {
     projects.value = (await API.listProjects()).projects;

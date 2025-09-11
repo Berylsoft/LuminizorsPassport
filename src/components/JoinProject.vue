@@ -1,4 +1,4 @@
-<template class="join-project">
+<template>
   <nut-popup
     v-if="show"
     v-model:visible="show"
@@ -52,13 +52,14 @@
 
 <script setup lang="ts">
 import { ref, watch } from "vue";
-import Icon from "./Icon.vue";
-import { useAPI } from "@/composables/api";
 import { useRouter } from "vue-router";
+import Icon from "@/components/Icon.vue";
+import { useAPI } from "@/composables/api";
+import { sleep } from "@/utils/";
 
 const show = defineModel<boolean>();
 const props = defineProps<{
-  projectId?: number;
+  projectId?: number | undefined;
   projectName: string;
 }>();
 
@@ -93,12 +94,12 @@ const join = async () => {
   try {
     await API.joinProject({
       Join: {
-        pid: props.projectId as number,
+        pid: props.projectId!,
         answer: answer.value,
       },
     });
     joined.value = true;
-    await new Promise((resolve) => setTimeout(resolve, 3000));
+    await sleep(3000);
     await router.push({
       name: "project-overview",
       params: { id: props.projectId },

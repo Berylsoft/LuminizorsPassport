@@ -6,16 +6,26 @@
   --theme-color: #699f4b;
   --theme-color-dark: #4b7b40;
   --theme-color-light: #e5f5b5;
+
+  // overwrite styles of nut-tabbar
+  .nut-tabbar__placeholder {
+    display: block;
+    background-color: var(--background-color);
+    /* prettier-ignore */
+    height: 45Px !important;
+  }
 }
 
 .theme-light {
   --background-color: #fff;
+  --theme-color-current: var(--theme-color-light);
   --theme-color-reverse: var(--theme-color-dark);
   --text-color-primary: black;
   --text-color-secondary: gray;
 }
 .theme-dark {
   --background-color: #333;
+  --theme-color-current: var(--theme-color-dark);
   --theme-color-reverse: var(--theme-color-light);
   --text-color-primary: #eee;
   --text-color-secondary: #bbb;

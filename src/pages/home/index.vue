@@ -25,12 +25,12 @@
           class="grid-item"
           @click="() => router.push({ name: item.target })"
         >
-          <Icon :name="item.icon" :size="64" color="var(--theme-color)" />
+          <Icon :name="item.icon" :size="120" color="var(--theme-color)" />
         </nut-grid-item>
         <nut-grid-item class="grid-item more" text="敬请期待">
           <Icon
             name="more-horizontal"
-            :size="64"
+            :size="120"
             style="color: var(--text-color-secondary) !important"
           />
         </nut-grid-item>

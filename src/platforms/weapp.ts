@@ -5,6 +5,8 @@ import {
   SubscribeStatus,
 } from "./types";
 
+export const name = "weapp";
+
 export const showToast = async (options: {
   title: string;
   icon?: "success" | "error" | "loading";

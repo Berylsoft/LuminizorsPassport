@@ -6,4 +6,5 @@ export default defineAppConfig({
     navigationBarTitleText: "LuminizorsPassport",
     navigationBarTextStyle: "black",
   },
+  darkmode: true,
 });

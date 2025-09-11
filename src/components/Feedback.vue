@@ -1,4 +1,4 @@
-<template class="feedback">
+<template>
   <nut-popup
     v-if="show"
     v-model:visible="show"
@@ -13,7 +13,7 @@
     >
       {{ config.feedback.groupID }}
       <span class="copy-button">
-        <Icon name="copy" size="20px" />
+        <Icon name="copy" />
       </span>
     </a>
   </nut-popup>

@@ -60,7 +60,6 @@ const login = async () => {
     void platform.showToast({
       title: "登录失败",
       icon: "error",
-      duration: 2000,
     });
   } finally {
     isLoading.value = false;

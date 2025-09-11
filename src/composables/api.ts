@@ -1,15 +1,11 @@
+import { useConfig } from "@/composables/config";
+import { toLowerCase, uncapitalize } from "@/utils";
 import * as APIs from "./apis";
 import { RequestHelper } from "./apis/helper";
-import { useConfig } from "./config";
 
 const config = useConfig();
 
 const helper = new RequestHelper({ backendServer: config.backendServer });
-
-const uncapitalize = <T extends string>(str: T) =>
-  (str.charAt(0).toLowerCase() + str.slice(1)) as Uncapitalize<T>;
-const toLowerCaseMethod = <T extends UpperCaseMethod>(method: T) =>
-  method.toLowerCase() as Lowercase<T>;
 
 const LuminizorsAPIs = {};
 
@@ -24,7 +20,7 @@ for (const [_name, API] of Object.entries(APIs)) {
       LuminizorsAPIs[name] = (
         config: RequestHelper.RequestConfig<Request> = {},
       ): Promise<Response> =>
-        helper[toLowerCaseMethod(method)]<Response, Request>(API.path, {
+        helper[toLowerCase(method)]<Response, Request>(API.path, {
           [RequestHelper.bypassLoginRetry]: !API.requireLogin,
           ...config,
         });
@@ -36,7 +32,7 @@ for (const [_name, API] of Object.entries(APIs)) {
         data: Request = null,
         config: RequestHelper.RequestConfig<Request> = {},
       ): Promise<Response> =>
-        helper[toLowerCaseMethod(method)]<Response, Request>(API.path, data, {
+        helper[toLowerCase(method)]<Response, Request>(API.path, data, {
           [RequestHelper.bypassLoginRetry]: !API.requireLogin,
           ...config,
         });

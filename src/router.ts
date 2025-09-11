@@ -3,6 +3,7 @@ import Home from "./pages/home/index.vue";
 import Overview from "./pages/recruit/overview.vue";
 import Recruit from "./pages/recruit/index.vue";
 import User from "./pages/user/index.vue";
+import FirstReview from "./pages/recruit/firstReview.vue";
 
 const routes: RouteRecordRaw[] = [
   { path: "/", redirect: "/home" },
@@ -13,6 +14,11 @@ const routes: RouteRecordRaw[] = [
     path: "/recruit/:id/overview",
     component: Overview,
     alias: "/recruit/:id",
+  },
+  {
+    name: "first-review",
+    path: "/recruit/:id/first-review",
+    component: FirstReview,
   },
   { name: "user", path: "/user/", component: User },
 ];

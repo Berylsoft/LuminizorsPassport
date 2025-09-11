@@ -11,6 +11,10 @@ declare interface LuminizorsConfig {
   notification: {
     templates: string[];
   };
+  upload: {
+    acceptedExtensions: string[];
+    acceptedMimeTypes: string[];
+  };
   feedback: {
     groupQRCode: any;
     groupID: string;

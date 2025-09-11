@@ -22,7 +22,7 @@
             :name
           >
             <template #icon>
-              <Icon :name="icon" :size="28" />
+              <Icon :name="icon" :size="50" />
             </template>
           </nut-tabbar-item>
         </nut-tabbar>
@@ -99,12 +99,5 @@ onMounted(() => setTitleAndActivatedTab(route.path));
   height: 100%;
   padding: 15px;
   background-color: var(--background-color);
-}
-
-.nut-tabbar__placeholder {
-  display: block;
-  background-color: var(--background-color);
-  /* prettier-ignore */
-  height: 45Px !important;
 }
 </style>

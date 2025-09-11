@@ -1,6 +1,7 @@
-import { defineConfig, type UserConfigExport } from "@tarojs/cli";
 import NutUIResolver from "@nutui/auto-import-resolver";
+import { defineConfig, type UserConfigExport } from "@tarojs/cli";
 import ComponentsPlugin from "unplugin-vue-components/vite";
+import { searchForWorkspaceRoot } from "vite";
 import TSConfigPathPlugin from "vite-tsconfig-paths";
 
 import devConfig from "./dev";
@@ -33,6 +34,17 @@ export default defineConfig<"vite">((merge) => {
         "@tarojs/plugin-html",
         {
           enableCookie: true,
+        },
+      ],
+      [
+        "@tarojs/plugin-framework-vue3",
+        {
+          vueLoaderOption: {
+            compilerOptions: {
+              // use uppercase to avoid transformation of Taro
+              isCustomElement: (tag: string) => tag === "INPUT",
+            },
+          },
         },
       ],
     ],
@@ -96,6 +108,12 @@ export default defineConfig<"vite">((merge) => {
       },
       sassLoaderOption: {
         silenceDeprecations: ["import", "legacy-js-api"],
+      },
+      devServer: {
+        open: false,
+        fs: {
+          allow: [searchForWorkspaceRoot(process.cwd())],
+        },
       },
     },
   };

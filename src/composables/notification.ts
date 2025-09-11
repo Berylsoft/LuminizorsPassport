@@ -1,5 +1,5 @@
-import { useConfig } from "./config";
 import Taro from "@tarojs/taro";
+import { useConfig } from "@/composables/config";
 import { platform, type SubscribeStatus } from "@/platforms";
 
 const config = useConfig();
@@ -29,12 +29,10 @@ const subscribe = async () => {
     switch (await getSubscribeStatus()) {
       case "disabled":
         await Taro.openSetting();
-        return await getSubscribeStatus();
-
+        break;
       case "unconfigured":
-        return await platform.subscribeNotification(
-          config.notification.templates
-        );
+        await platform.subscribeNotification(config.notification.templates);
+        break;
     }
   } catch (err) {
     if (err instanceof Error)
@@ -43,6 +41,7 @@ const subscribe = async () => {
       });
     throw err;
   }
+  return await getSubscribeStatus();
 };
 
 export const useNotification = () => ({

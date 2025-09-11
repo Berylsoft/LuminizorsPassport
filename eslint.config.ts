@@ -26,8 +26,9 @@ export default tseslint.config(
     },
     rules: {
       "@typescript-eslint/no-namespace": "off",
+      "@typescript-eslint/no-non-null-assertion": "off",
       "vue/multi-word-component-names": "off",
     },
   },
-  eslintConfigPrettier
+  eslintConfigPrettier,
 );

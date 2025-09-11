@@ -8,15 +8,13 @@ export namespace Project {
     ended: boolean;
   }
 
-  export type ProjectDetail = ProjectDetailBased &
-    (
-      | ProjectDetailEntered
-      | ProjectDetailPreSubmitted
-      | ProjectDetailPreSubmitRejected
-      | ProjectDetailPreSubmitPassed
-      | ProjectDetailSubmitted
-      | ProjectDetailSubmitRejected
-    );
+  export type ProjectDetail =
+    | ProjectDetailEntered
+    | ProjectDetailPreSubmitted
+    | ProjectDetailPreSubmitRejected
+    | ProjectDetailPreSubmitPassed
+    | ProjectDetailSubmitted
+    | ProjectDetailSubmitRejected;
   interface ProjectDetailBased {
     info: {
       name: string;
@@ -27,22 +25,23 @@ export namespace Project {
       submit_file_size_min: number;
       end_time: string;
     };
+    status: JoinedStatus;
   }
-  interface ProjectDetailEntered {
+  interface ProjectDetailEntered extends ProjectDetailBased {
     status: "Entered";
     nda_info: null;
     have_attachment: null;
     pre_submit_detail: null;
     submit_detail: null;
   }
-  interface ProjectDetailPreSubmitted {
+  interface ProjectDetailPreSubmitted extends ProjectDetailBased {
     status: "PreSubmitted";
     nda_info: null;
     have_attachment: null;
     pre_submit_detail: null;
     submit_detail: null;
   }
-  interface ProjectDetailPreSubmitRejected {
+  interface ProjectDetailPreSubmitRejected extends ProjectDetailBased {
     status: "PreSubmitRejected";
     nda_info: null;
     have_attachment: null;
@@ -53,7 +52,7 @@ export namespace Project {
     };
     submit_detail: null;
   }
-  interface ProjectDetailPreSubmitPassed {
+  interface ProjectDetailPreSubmitPassed extends ProjectDetailBased {
     status: "PreSubmitPassed";
     nda_info: NDAStatus;
     have_attachment: boolean | null;
@@ -62,14 +61,14 @@ export namespace Project {
     };
     submit_detail: null;
   }
-  interface ProjectDetailSubmitted {
+  interface ProjectDetailSubmitted extends ProjectDetailBased {
     status: "Submitted" | "SubmitPassed";
     nda_info: NDAStatus;
     have_attachment: boolean;
     pre_submit_detail: Review.FirstReview.Result;
     submit_detail: null;
   }
-  interface ProjectDetailSubmitRejected {
+  interface ProjectDetailSubmitRejected extends ProjectDetailBased {
     status: "SubmitRejected";
     nda_info: NDAStatus;
     have_attachment: boolean;

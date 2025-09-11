@@ -28,7 +28,7 @@
       >
         <template #icon>
           <nut-avatar size="large">
-            <Icon name="person" :size="40" />
+            <Icon name="person" :size="80" />
           </nut-avatar>
         </template>
         <template #desc>
@@ -50,7 +50,7 @@
               shape="button"
               size="mini"
             >
-              <Icon name="arrow-sync" :size="16" />
+              <Icon name="arrow-sync" :size="32" />
             </nut-radio>
             <nut-radio
               class="radio-button"
@@ -58,7 +58,7 @@
               shape="button"
               size="mini"
             >
-              <Icon name="weather-sunny" :size="16" />
+              <Icon name="weather-sunny" :size="32" />
             </nut-radio>
             <nut-radio
               class="radio-button"
@@ -66,7 +66,7 @@
               shape="button"
               size="mini"
             >
-              <Icon name="dark-theme" :size="16" />
+              <Icon name="dark-theme" :size="32" />
             </nut-radio>
           </nut-radio-group>
         </template>
@@ -85,7 +85,7 @@
       </nut-cell>
     </view>
     <!-- temporary disable -->
-    <view v-show="false" class="feedback">
+    <view v-if="false" class="feedback">
       <nut-cell
         is-link
         :round-radius="10"

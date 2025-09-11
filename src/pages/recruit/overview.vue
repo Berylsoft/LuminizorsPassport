@@ -30,7 +30,7 @@
               class="refresh-button nut-icon-am-infinite"
               :class="{ 'nut-icon-am-rotate': refreshing }"
               name="arrow-clockwise"
-              :size="24"
+              :size="48"
             />
           </span>
         </view>
@@ -44,9 +44,7 @@
     size="large"
   >
     <view class="title">
-      <Icon class="icon" :name="detailCell.icon" :size="20" />{{
-        detailCell.title
-      }}
+      <Icon class="icon" :name="detailCell.icon" />{{ detailCell.title }}
     </view>
     <view class="content">
       <template v-if="projectDetail.status === 'PreSubmitPassed'">
@@ -128,11 +126,11 @@ const router = useRouter();
 
 const showNDA = ref(false);
 
-const projectId = ref(+route.params.id);
+const projectId = ref(+route.params["id"]!);
 const projectDetail = ref(await API.projectInfo({ pid: projectId.value }));
 onBeforeRouteUpdate(async (to, from) => {
-  if (to.params.id !== from.params.id) {
-    projectId.value = +to.params.id;
+  if (to.params["id"] !== from.params["id"]) {
+    projectId.value = +to.params["id"]!;
     projectDetail.value = await API.projectInfo({ pid: projectId.value });
   }
 });
@@ -151,9 +149,9 @@ const refresh = async () => {
 };
 
 const groups = computed(() => {
-  const groupInfo = projectDetail.value.pre_submit_detail?.["Passed"] as
-    | Review.GroupInfo
-    | undefined;
+  const detail = projectDetail.value.pre_submit_detail ?? {};
+  const groupInfo =
+    "Passed" in detail ? (detail.Passed as Review.GroupInfo) : undefined;
   if (groupInfo) {
     return Object.entries(groupInfo)
       .filter(([, value]) => value)
@@ -294,7 +292,10 @@ watch(
         break;
 
       case "PreSubmitPassed":
-        if (projectDetail.value.nda_info["Pending"]) {
+        if (
+          typeof projectDetail.value.nda_info === "object" &&
+          "Pending" in projectDetail.value.nda_info
+        ) {
           statusText.value = "待签署NDA";
           statusColor.value = "orange";
           mainButton.value = {

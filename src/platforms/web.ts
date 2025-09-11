@@ -6,6 +6,9 @@ import type {
   SubscribeNotificationResult,
   SubscribeStatus,
 } from "./types";
+import { sleep } from "@/utils";
+
+export const name = "web";
 
 /** @private */
 export const _toastState = reactive<{
@@ -32,9 +35,7 @@ export const showToast = ({
   _toastState.type = icon === "error" ? "fail" : (icon ?? "text");
   _toastState.duration = duration ?? 2000;
   _toastState.show = true;
-  return new Promise<void>((resolve) => {
-    setTimeout(resolve, _toastState.duration);
-  });
+  return sleep(_toastState.duration);
 };
 
 export const setTitle = async (title: string) => {
@@ -85,7 +86,7 @@ export const getNoticificationSubscribeStatus = async (
   const notificationSetting = JSON.parse(
     localStorage.getItem("notification") ?? "{}",
   ) as Record<string, SubscribeStatus | undefined>;
-  return notificationSetting[template] || "unconfigured";
+  return notificationSetting[template] ?? "unconfigured";
 };
 
 /** @todo simulated subscription UI*/

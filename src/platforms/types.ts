@@ -1,4 +1,5 @@
 export interface Platform {
+  name: Lowercase<TaroGeneral.ENV_TYPE>;
   showToast(options: {
     title: string;
     icon?: "success" | "error" | "loading";

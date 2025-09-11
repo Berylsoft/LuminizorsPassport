@@ -39,7 +39,7 @@ export class RequestHelper {
 
     if (isSuccessResponse(response)) {
       const { data } = response;
-      return data["Ok"];
+      return data.Ok;
     } else {
       const { status, data, config } = response;
       const url = new URL(config.url ?? "", config.baseURL).href;
@@ -148,8 +148,8 @@ export namespace RequestHelper {
   export class RequestError extends Error {
     public data: unknown;
     public status: number;
-    public requestId?: string;
-    public url?: string;
+    public requestId: string | undefined;
+    public url: string | undefined;
     constructor(
       options: RequestErrorOptions,
       ...params: Parameters<ErrorConstructor>
