@@ -1,25 +1,20 @@
 import axios from "axios";
 import { useAPI } from "@/composables/api";
-import { useConfig } from "@/composables/config";
 import { platform } from "@/platforms";
-import type { File } from "@/types";
-import { readBytesFromStream, toLowerCase, uint8ArrayToHex } from "@/utils";
+import { File } from "@/types";
+import { type CommonFile, toLowerCase, uint8ArrayToHex } from "@/utils";
 
 const API = useAPI();
-const config = useConfig();
 
-const upload = async (
-  file: File.File,
-  options: {
-    abortSignal: AbortSignal;
-    projectId: number;
-  },
-) => {
-  const { projectId, abortSignal } = options;
-  const md5 = await file.calcMD5();
-  const stream = file.stream();
-  const head = uint8ArrayToHex(await readBytesFromStream(stream, 12));
-  await stream.cancel();
+const upload = async (fileToUpload: File.FileUpload, projectId: number) => {
+  if (!fileToUpload.file)
+    throw new UploadError(UploadErrors.Unknown, "上传失败: 文件不存在");
+  if (!fileToUpload.abort) fileToUpload.abort = new AbortController();
+  const { file, abort } = fileToUpload;
+
+  fileToUpload.status = File.UploadStatus.Initialization;
+  const md5 = await file.getMD5();
+  const head = uint8ArrayToHex(new Uint8Array(await file.readBytes(0, 12)));
   try {
     const res = await API.uploadFileStart({
       Start: {
@@ -49,18 +44,21 @@ const upload = async (
       case "InvalidFileType":
         throw new UploadError(
           UploadErrors.InvalidFileType,
-          `${file.name} 上传失败:\n文件类型不受支持, 仅支持${config.upload.acceptedExtensions.join()}`,
+          `${file.name} 上传失败:\n不支持的文件类型`,
         );
     }
     const { file_id: id, presigned_req: presignedRequest } = res.File;
-    await uploadFile(file, presignedRequest, abortSignal);
+    fileToUpload.status = File.UploadStatus.Uploading;
+    await uploadFile(file, presignedRequest, abort.signal);
     const result = await API.uploadFileFinish({ Finish: { file_id: id } });
     if (result === "UploadNotFinish") {
-      await continueUpload(file, id, abortSignal);
+      await continueUpload(file, id, abort);
     }
+    fileToUpload.status = File.UploadStatus.Success;
     return id;
   } catch (err) {
-    if (abortSignal.aborted) {
+    fileToUpload.status = File.UploadStatus.Error;
+    if (abort.signal.aborted) {
       throw new UploadError(UploadErrors.Cancelled, `取消上传 ${file.name}`);
     } else if (err instanceof UploadError) {
       throw err;
@@ -75,14 +73,14 @@ const upload = async (
 };
 
 const continueUpload = async (
-  file: File.File,
+  file: CommonFile,
   id: number,
-  abortSignal: AbortSignal,
+  abort: AbortController,
 ) => {
   const { presigned_req: presignedRequest } = (
     await API.uploadFileContinue({ Continue: { file_id: id } })
   ).Continue;
-  await uploadFile(file, presignedRequest, abortSignal);
+  await uploadFile(file, presignedRequest, abort.signal);
   const result = await API.uploadFileFinish({
     Finish: {
       file_id: id,
@@ -93,15 +91,13 @@ const continueUpload = async (
 };
 
 const uploadFile = async (
-  file: File.File,
+  file: CommonFile,
   presignedRequest: File.PresignedRequest,
   abortSignal: AbortSignal,
   maxRetries = 2,
 ) => {
   const { headers, method, uri } = presignedRequest;
-  const stream = file.stream();
-  const data = new Blob([(await readBytesFromStream(stream)).buffer]);
-  await stream.cancel();
+  const data = file.toBlob();
   try {
     await axios[toLowerCase(method)](uri, data, {
       headers: Object.fromEntries(headers),

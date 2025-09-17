@@ -1,3 +1,5 @@
+import { CommonFile } from "@/utils";
+
 export namespace File {
   export interface PresignedRequest {
     headers: [string, string][];
@@ -5,19 +7,18 @@ export namespace File {
     uri: string;
   }
 
-  export type UploadStatus =
-    | "unselected"
-    | "init"
-    | "uploading"
-    | "success"
-    | "error";
-
-  export interface File {
-    name: string;
-    path: string;
-    size: number;
-    type: string;
-    calcMD5: () => Promise<string>;
-    stream: () => ReadableStream<Uint8Array<ArrayBuffer>>;
+  export enum UploadStatus {
+    Unselected,
+    Initialization,
+    Uploading,
+    Success,
+    Error,
+  }
+  export interface FileUpload {
+    status: UploadStatus;
+    file?: CommonFile | undefined;
+    abort?: AbortController;
+    id?: number;
+    error?: Error;
   }
 }

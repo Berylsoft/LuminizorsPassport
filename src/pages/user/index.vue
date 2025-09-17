@@ -77,7 +77,7 @@
         is-link
         :round-radius="10"
         title="通知设置"
-        @click="() => (showNotificationSetting = true)"
+        @click="showNotificationSetting = true"
       >
         <template #icon>
           <Icon color="var(--theme-color-reverse)" name="alert" />
@@ -90,7 +90,7 @@
         is-link
         :round-radius="10"
         title="意见反馈"
-        @click="() => (showFeedback = true)"
+        @click="showFeedback = true"
       >
         <template #icon>
           <Icon color="var(--theme-color-reverse)" name="chat-help" />
@@ -102,7 +102,7 @@
         is-link
         title="关于"
         :round-radius="10"
-        @click="() => (showAbout = true)"
+        @click="showAbout = true"
       >
         <template #icon>
           <Icon color="var(--theme-color-reverse)" name="info" />
@@ -114,7 +114,7 @@
         is-link
         :round-radius="10"
         title="退出登录"
-        @click="() => (showSignOutDialog = true)"
+        @click="showSignOutDialog = true"
       >
         <template #icon>
           <Icon color="var(--theme-color-reverse)" name="sign-out" />

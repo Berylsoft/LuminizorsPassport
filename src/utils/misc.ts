@@ -154,3 +154,13 @@ export const uint8ArrayToHex = (bytes: Uint8Array) =>
     [(s: string, byte: number) => string, string],
     string
   >(bytes, (s, byte) => s + byteToHex[byte]!, "");
+
+const byteUnits = ["B", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB"];
+export const humanizeBytes = (bytes: number, decimal = 2) => {
+  let v = bytes;
+  for (const unit of byteUnits) {
+    if (v < 1e3) return `${v.toFixed(decimal)}${unit}`;
+    else v /= 1e3;
+  }
+  return `${v.toFixed(decimal)}YB`;
+};

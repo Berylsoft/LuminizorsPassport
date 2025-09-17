@@ -93,6 +93,7 @@ onMounted(() => setTitleAndActivatedTab(route.path));
   background-color: var(--background-color);
   --nut-primary-color: var(--theme-color);
   --nut-primary-color-end: var(--theme-color-dark);
+  --nut-dark-color: var(--text-color-primary);
 }
 
 .body {

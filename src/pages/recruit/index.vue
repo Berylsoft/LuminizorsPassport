@@ -52,7 +52,7 @@
                         class="action-button"
                         type="primary"
                         size="small"
-                        @click="() => joinProject(project.id, project.name)"
+                        @click="joinProject(project.id, project.name)"
                       >
                         报名
                       </nut-button>

@@ -1,10 +1,10 @@
-<template class="notification-setting">
+<template>
   <nut-popup
     v-if="show"
     v-model:visible="show"
     pop-class="notification-setting-content"
     round
-    @click-overlay="() => (show = false)"
+    @click-overlay="show = false"
   >
     <nut-space direction="vertical" fill :gutter="20">
       <view class="title"> 通知设置 </view>

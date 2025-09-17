@@ -1,4 +1,4 @@
-<template class="login">
+<template>
   <nut-popup
     v-if="showLogin"
     v-model:visible="showLogin"

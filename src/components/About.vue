@@ -1,10 +1,10 @@
-<template class="about">
+<template>
   <nut-popup
     v-if="show"
     v-model:visible="show"
     pop-class="about-content"
     round
-    @click-overlay="() => (show = false)"
+    @click-overlay="show = false"
   >
     <view class="logo">
       <NutAvatar size="large"><img :src="config.logo" /></NutAvatar>

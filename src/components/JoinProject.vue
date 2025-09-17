@@ -4,24 +4,25 @@
     v-model:visible="show"
     pop-class="join-project-content"
     round
-    @click-overlay="() => (show = false)"
+    @click-overlay="show = false"
   >
     <view v-if="joined" class="success">
       <view class="success-icon">
         <Icon name="checkmark-circle" size="25vw" />
       </view>
       <view class="success-text">欢迎加入{{ projectName }}</view>
-      <view class="redirect-tip">即将跳转到项目详情页</view>
+      <view class="redirect-tips">即将跳转到项目详情页</view>
     </view>
     <view v-else class="join-form">
       <template v-if="question">
         <view class="title">加入{{ projectName }}</view>
         <view class="question">{{ question }}</view>
-        <view :class="['answer', { error }]">
+        <view class="answer">
           <nut-input
             v-model.lazy.trim="answer"
             class="answer-input"
             clearable
+            :error
             placeholder="请输入答案"
           />
         </view>
@@ -32,7 +33,7 @@
           class="cancel-button"
           autofocus
           type="default"
-          @click="() => (show = false)"
+          @click="show = false"
         >
           取消
         </nut-button>
@@ -134,7 +135,7 @@ const join = async () => {
       color: var(--text-color-primary);
       font-size: 40px;
     }
-    .redirect-tip {
+    .redirect-tips {
       color: var(--text-color-secondary);
       font-size: 32px;
     }
@@ -150,13 +151,6 @@ const join = async () => {
       color: var(--text-color-secondary);
       font-size: 32px;
       white-space: pre-wrap;
-    }
-    .answer.error {
-      --nut-input-border-bottom: red;
-
-      .answer-input {
-        color: red;
-      }
     }
     .buttons {
       display: flex;

@@ -1,10 +1,10 @@
-<template class="nda">
+<template>
   <nut-popup
     v-if="show"
     v-model:visible="show"
     pop-class="nda-content"
     round
-    @click-overlay="() => (show = false)"
+    @click-overlay="show = false"
   >
     <view class="hint"> 请认真阅读协议条款: </view>
     <view class="nda-container">
@@ -17,9 +17,7 @@
       </nut-backtop>
     </view>
     <view class="buttons">
-      <nut-button type="default" @click="() => (show = false)">
-        取消
-      </nut-button>
+      <nut-button type="default" @click="show = false"> 取消 </nut-button>
       <nut-button
         :disabled="agreeButtonDisabled"
         :loading="loading"
@@ -110,7 +108,7 @@ const agree = async () => {
   .buttons {
     display: flex;
     flex-flow: row wrap;
-    justify-content: space-around;
+    justify-content: space-evenly;
   }
 }
 </style>

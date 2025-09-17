@@ -15,7 +15,7 @@
                 class="end-time-countdown"
                 :end-time="endTime.valueOf()"
                 format="DD天HH时"
-                @on-end="() => (isEnded = new Date() > endTime)"
+                @on-end="isEnded = new Date() > endTime"
               />
             </span>
             <span v-else>已结束</span>

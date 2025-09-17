@@ -23,7 +23,7 @@
           :key="index"
           :text="item.text"
           class="grid-item"
-          @click="() => router.push({ name: item.target })"
+          @click="router.push({ name: item.target })"
         >
           <Icon :name="item.icon" :size="120" color="var(--theme-color)" />
         </nut-grid-item>
@@ -59,11 +59,11 @@ const functions = ref([{ icon: "receipt", text: "征集", target: "recruit" }]);
 }
 
 .anouncement {
-  --nut-noticebar-background: var(--theme-color-light);
-  --nut-noticebar-color: var(--theme-color-dark);
-  // for dark mode
-  --nut-dark-background2: var(--theme-color-dark);
-  --nut-dark-color: var(--theme-color-light);
+  --nut-noticebar-background: var(--theme-color-current);
+  --nut-noticebar-color: var(--theme-color-reverse);
+  // patch for dark mode
+  --nut-dark-background2: var(--nut-noticebar-background);
+  --nut-dark-color: var(--nut-noticebar-color);
 }
 
 .swiper {

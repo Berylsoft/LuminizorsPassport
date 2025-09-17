@@ -26,51 +26,44 @@
 
 <script setup lang="ts">
 import Taro from "@tarojs/taro";
-import { fileTypeFromBlob, fileTypeFromStream } from "file-type";
-import { md5 } from "hash-wasm";
 import { computed, useTemplateRef } from "vue";
 import { platform } from "@/platforms";
-import { File } from "@/types";
-import { createReadableStream, TaroFS } from "@/utils";
+import { type CommonFile, WebFile, TaroFSFile } from "@/utils";
 
-const file = defineModel<File.File | undefined>();
+const file = defineModel<CommonFile | undefined>();
 const { acceptedExtensions = [], acceptedMimeTypes = [] } = defineProps<{
   acceptedExtensions?: string[];
   acceptedMimeTypes?: string[];
 }>();
 
 const emit = defineEmits<{
-  selected: [File.File];
+  selected: [CommonFile];
 }>();
 
 const choosed = computed(() => file.value === undefined);
+
+const onSelected = async (f: CommonFile) => {
+  const type = await f.getType();
+  if (
+    acceptedMimeTypes.length === 0 ||
+    acceptedMimeTypes.includes(type?.mime ?? "")
+  ) {
+    file.value = f;
+    emit("selected", f);
+  } else {
+    void platform.showToast({
+      title: `暂不支持${type?.ext ?? "此类型的"}文件`,
+    });
+    return;
+  }
+};
 
 // web
 const inputElement = useTemplateRef<HTMLInputElement | null>("file-input");
 const onInputChange = async () => {
   const inputFile = inputElement.value?.files?.[0];
   if (inputFile) {
-    const type = await fileTypeFromBlob(inputFile);
-    if (
-      acceptedMimeTypes.length === 0 ||
-      acceptedMimeTypes.includes(type?.mime ?? "")
-    ) {
-      const f = {
-        name: inputFile.name,
-        path: inputElement.value.value,
-        size: inputFile.size,
-        type: type?.mime ?? "",
-        calcMD5: async () => md5(await inputFile.bytes()),
-        stream: () => inputFile.stream(),
-      };
-      file.value = f;
-      emit("selected", f);
-    } else {
-      void platform.showToast({
-        title: " 不支持的文件类型",
-      });
-      return;
-    }
+    await onSelected(new WebFile(inputFile));
   }
 };
 
@@ -78,32 +71,15 @@ const onInputChange = async () => {
 const chooseFile = async () => {
   const result = await Taro.chooseMessageFile({
     count: 1,
-    type: "all",
+    type: "file",
+    extension: [
+      ...acceptedExtensions,
+      ...acceptedExtensions.map((ext) => `.${ext}`),
+    ],
   });
   const file = result.tempFiles[0];
   if (file) {
-    const type = await fileTypeFromStream(createReadableStream(file.path));
-    if (acceptedMimeTypes.includes(type?.mime ?? "")) {
-      void platform.showToast({
-        title: " 不支持的格式",
-        icon: "error",
-      });
-      return;
-    }
-    emit("selected", {
-      name: file.name,
-      path: file.path,
-      size: file.size,
-      type: type?.mime ?? "",
-      calcMD5: async () =>
-        (
-          await TaroFS.getFileInfo({
-            filePath: file.path,
-            digestAlgorithm: "md5",
-          })
-        ).digest!,
-      stream: () => createReadableStream(file.path),
-    });
+    await onSelected(new TaroFSFile(file));
   }
 };
 </script>

@@ -4,12 +4,12 @@
     v-model:visible="show"
     pop-class="feedback-content"
     round
-    @click-overlay="() => (show = false)"
+    @click-overlay="show = false"
   >
     <img class="qrcode" :src="config.feedback.groupQRCode" />
     <a
       class="group-number"
-      @click="() => platform.setClipboard(config.feedback.groupID)"
+      @click="platform.setClipboard(config.feedback.groupID)"
     >
       {{ config.feedback.groupID }}
       <span class="copy-button">

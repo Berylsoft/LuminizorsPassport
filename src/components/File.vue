@@ -18,10 +18,10 @@
 </template>
 
 <script setup lang="ts">
-import { computed } from "vue";
-import { File } from "@/types";
+import { computed, ref, watch } from "vue";
 import Taro from "@tarojs/taro";
 import Icon from "@/components/Icon.vue";
+import type { CommonFile } from "@/utils";
 
 const {
   file,
@@ -29,7 +29,7 @@ const {
   defaultText = "选择文件",
   defaultIcon = "add",
 } = defineProps<{
-  file: File.File | undefined;
+  file: CommonFile | undefined;
   size?: number | string;
   defaultText?: string;
   defaultIcon?: string;
@@ -38,24 +38,35 @@ const {
 const sizeTransformed = computed(() =>
   typeof size === "number" ? Taro.pxTransform(size) : size,
 );
-const icon = computed(() => {
-  if (file) {
-    switch (file.type.split("/")[0]) {
-      case "audio":
-        return "music-note-2";
-      case "image":
-        return "image";
-      case "text":
-        return "document-text";
-      case "video":
-        return "video";
-      default:
-        return "document-question";
+const icon = ref(defaultIcon);
+
+watch(
+  () => file,
+  async () => {
+    if (file) {
+      const type = (await file.getType())?.mime;
+      switch (type?.split("/")[0]) {
+        case "audio":
+          icon.value = "music-note-2";
+          break;
+        case "image":
+          icon.value = "image";
+          break;
+        case "text":
+          icon.value = "document-text";
+          break;
+        case "video":
+          icon.value = "video";
+          break;
+        default:
+          icon.value = "document-question";
+          break;
+      }
+    } else {
+      icon.value = defaultIcon;
     }
-  } else {
-    return defaultIcon;
-  }
-});
+  },
+);
 </script>
 
 <style lang="scss">
