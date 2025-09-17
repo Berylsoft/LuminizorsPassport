@@ -58,6 +58,10 @@ const upload = async (fileToUpload: File.FileUpload, projectId: number) => {
     return id;
   } catch (err) {
     fileToUpload.status = File.UploadStatus.Error;
+    if (fileToUpload.id) {
+      void API.deleteFile({ file_id: fileToUpload.id });
+    }
+
     if (abort.signal.aborted) {
       throw new UploadError(UploadErrors.Cancelled, `取消上传 ${file.name}`);
     } else if (err instanceof UploadError) {

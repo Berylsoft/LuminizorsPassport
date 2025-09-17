@@ -7,6 +7,11 @@ export namespace File {
     uri: string;
   }
 
+  export interface FileInfo {
+    id: number;
+    name: string;
+  }
+
   export enum UploadStatus {
     Unselected,
     Initialization,

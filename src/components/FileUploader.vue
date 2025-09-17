@@ -64,6 +64,11 @@ const {
   size?: number | string;
 }>();
 
+const emit = defineEmits<{
+  clear: [File.FileUpload];
+  success: [number];
+}>();
+
 const config = useConfig();
 const { upload } = useUpload();
 
@@ -135,8 +140,9 @@ const onSelected = async () => {
 
   file.value.abort = new AbortController();
   try {
-    file.value.id = await upload(file.value, projectId);
+    const id = await upload(file.value, projectId);
     file.value.status = File.UploadStatus.Success;
+    emit("success", id);
   } catch (err) {
     file.value.status = File.UploadStatus.Error;
     if (err instanceof Error) file.value.error = err;
@@ -147,9 +153,9 @@ const onSelected = async () => {
 };
 
 const onClear = () => {
-  file.value.status = File.UploadStatus.Unselected;
-  file.value.file = undefined;
   file.value.abort?.abort();
+  emit("clear", file.value);
+  file.value = { status: File.UploadStatus.Unselected };
 };
 </script>
 

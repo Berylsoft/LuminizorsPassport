@@ -33,10 +33,7 @@ export namespace UploadFileList {
   export declare const Request: "List";
   export declare const Response: {
     List: {
-      files: {
-        id: number;
-        name: string;
-      }[];
+      files: File.FileInfo[];
     };
   };
 }

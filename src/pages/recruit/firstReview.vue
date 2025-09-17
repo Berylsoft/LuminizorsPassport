@@ -37,6 +37,7 @@
             :error="Boolean(usernameError)"
             max-length="20"
             placeholder="请输入用户名"
+            :readonly="readOnly"
             show-word-limit
             type="text"
           />
@@ -47,7 +48,10 @@
           <template v-if="!skipPassword" #description>
             <view class="skip-code">
               拥有跳过密码?
-              <span class="clickable" @click="showSkipInterface = true">
+              <span
+                class="clickable"
+                @click="readOnly || (showSkipInterface = true)"
+              >
                 点击填写
               </span>
             </view>
@@ -56,7 +60,9 @@
           <template v-else #description>
             <view class="skip-code">
               已填写跳过密码
-              <span class="clickable" @click="skipPassword = ''">取消</span>
+              <span class="clickable" @click="readOnly || (skipPassword = '')">
+                取消
+              </span>
             </view>
           </template>
           <file-uploader
@@ -66,6 +72,7 @@
             :file-size-min="projectDetail?.info.pre_submit_file_size_min"
             :file-size-max="projectDetail?.info.pre_submit_file_size_max"
             :project-id
+            @clear="onClear"
           />
         </FormItem>
       </nut-cell>
@@ -81,7 +88,11 @@
             可在下方填写意向<br />
             我们会参考你的试音情况综合判断
           </template>
-          <nut-checkbox v-model="harmonyGroupIntention" :icon-size="16">
+          <nut-checkbox
+            v-model="harmonyGroupIntention"
+            :icon-size="16"
+            :readonly="readOnly"
+          >
             我有意愿加入和声组
           </nut-checkbox>
         </FormItem>
@@ -94,6 +105,7 @@
             limit-show
             max-length="100"
             placeholder="请输入备注(选填)"
+            :readonly="readOnly"
           />
         </FormItem>
       </nut-cell>
@@ -103,6 +115,7 @@
   <view class="action-buttons-container">
     <nut-button
       class="button cancel"
+      :disabled="readOnly"
       size="large"
       type="default"
       @click="cancel"
@@ -191,6 +204,7 @@ onBeforeRouteUpdate(async (to, from) => {
   }
 });
 
+const readOnly = ref(false);
 const showSubmitSuccess = ref(false);
 const showSkipInterface = ref(false);
 
@@ -221,15 +235,24 @@ const commentError = ref<string>();
 watch(comment, () => (commentError.value = undefined));
 
 const submitButtonDisabled = computed(
-  () => !username.value || (!skipPassword.value && !file.value),
+  () => !username.value || (!skipPassword.value && file.value.id === undefined),
 );
 const submitButtonLoading = ref(false);
 
-const cancel = () => {
+const onClear = (file: File.FileUpload) => {
+  if (file.status === File.UploadStatus.Success)
+    void API.deleteFile({ file_id: file.id! });
+};
+
+const cancel = async () => {
+  if (file.value.status === File.UploadStatus.Success)
+    await API.deleteFile({ file_id: file.value.id! });
   router.back();
 };
+
 const submit = async () => {
   try {
+    readOnly.value = true;
     const error = usernameError.value ?? commentError.value;
     if (error) throw new Error(error);
     if (skipPassword.value !== "") {
@@ -256,12 +279,27 @@ const submit = async () => {
         default:
           throw new Error("请先上传试音文件");
       }
+
       submitButtonLoading.value = true;
+
+      // check file status
+      const { files } = await API.listPendingFiles({
+        pid: projectId.value,
+      });
+      const fileIDs = files.map((file) => file.id);
+      if (!fileIDs.includes(file.value.id!))
+        throw new Error("本地文件与服务端不一致, 请重试");
+      else if (fileIDs.length > 1)
+        await Promise.all(
+          fileIDs
+            .filter((id) => id !== file.value.id)
+            .map(async (id) => await API.deleteFile({ file_id: id })),
+        );
+
       const res = await API.preSubmit({
         pid: projectId.value,
         name: username.value,
         comment: comment.value,
-        file: { File: file.value.id! },
         ...(showHarmonyGroupIntention.value
           ? { harmony_group_intention: harmonyGroupIntention.value }
           : {}),
@@ -274,6 +312,7 @@ const submit = async () => {
     }
     return;
   } finally {
+    readOnly.value = false;
     submitButtonLoading.value = false;
   }
   showSubmitSuccess.value = true;
@@ -382,18 +421,26 @@ const saveSkipPassword = () => {
   height: 240px;
 }
 .skipping-interface {
-  padding: 5%;
-  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
   width: 600px;
+  padding: 50px 20px;
+  text-align: center;
 
   .title {
     font-size: 36px;
+  }
+  .description {
+    font-size: 28px;
   }
   .buttons {
     margin-top: 30px;
     display: flex;
     flex-flow: row wrap;
     justify-content: space-evenly;
+    width: 100%;
     --nut-button-default-padding: 0 70px;
   }
 }

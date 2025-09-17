@@ -7,9 +7,6 @@ export namespace PreSubmit {
     name: string;
     harmony_group_intention?: boolean;
     comment: string;
-    file: {
-      File: number;
-    };
   };
   export declare const Response: "Success" | "InvalidName" | "InvalidComment";
 }
