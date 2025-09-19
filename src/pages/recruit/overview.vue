@@ -87,7 +87,7 @@
       <nut-step title="报名" content="报名成功">1</nut-step>
       <nut-step title="初审" :content="firstReviewStatus">2</nut-step>
       <nut-step title="签署NDA" :content="NDAStatus"> 3 </nut-step>
-      <nut-step title="终审" :content="finalReviewStatus">4</nut-step>
+      <nut-step title="正式提交" :content="formalSubmitStatus">4</nut-step>
       <nut-step title="完成">5</nut-step>
     </nut-steps>
   </view>
@@ -176,16 +176,16 @@ const openFirstReview = () =>
       pid: projectId.value,
     },
   });
-const openFinalReview = () =>
+const openFormalSubmit = () =>
   void router.push({
-    name: "final-review",
+    name: "formal-submit",
     query: {
       pid: projectId.value,
     },
   });
 
 const getReasonText = (
-  reason: Review.FirstReview.RejectReason | Review.FinalReview.RejectReason,
+  reason: Review.FirstReview.RejectReason | Review.FormalSubmit.RejectReason,
 ) => {
   switch (reason) {
     case "DeviceOrEnvironment":
@@ -223,12 +223,12 @@ const NDAStatus = computed(() => {
       return "待签署半保密协议";
   }
 });
-const finalReviewStatus = computed(() => {
+const formalSubmitStatus = computed(() => {
   switch (projectDetail.value.status) {
     case "SubmitPassed":
-      return "终审通过";
+      return "正式提交已通过";
     case "SubmitRejected":
-      return `终审未通过, ${getReasonText(projectDetail.value.submit_detail.Rejected.reason)}`;
+      return `正式提交未通过, ${getReasonText(projectDetail.value.submit_detail.Rejected.reason)}`;
     default:
       return "待提交";
   }
@@ -308,9 +308,9 @@ watch(
           statusText.value = "初审通过";
           statusColor.value = "green";
           mainButton.value = {
-            text: "查看项目详情",
+            text: "去正式提交",
             disabled: false,
-            action: openFinalReview,
+            action: openFormalSubmit,
           };
           currentStep.value = 4;
         }
@@ -322,39 +322,39 @@ watch(
         break;
 
       case "Submitted":
-        statusText.value = "终审中";
+        statusText.value = "正式提交审核中";
         statusColor.value = "var(--theme-color-dark)";
         detailCell.value.show = false;
         mainButton.value = {
-          text: "请耐心等待终审结果",
+          text: "请耐心等待审核结果",
           disabled: true,
         };
         currentStep.value = 4;
         break;
 
       case "SubmitRejected":
-        statusText.value = "终审未通过";
+        statusText.value = "正式提交未通过";
         statusColor.value = "red";
         detailCell.value = {
           show: true,
           icon: "warning",
-          title: "终审未通过",
+          title: "正式提交未通过",
         };
         mainButton.value = {
-          text: "重新上传终审信息",
+          text: "重新提交",
           disabled: false,
-          action: openFinalReview,
+          action: openFormalSubmit,
         };
         currentStep.value = 4;
         break;
 
       case "SubmitPassed": {
-        statusText.value = "终审通过";
+        statusText.value = "正式提交已通过";
         statusColor.value = "green";
         detailCell.value = {
           show: true,
           icon: "info",
-          title: "终审通过",
+          title: "正式提交已通过",
         };
         mainButton.value = {
           text: "已完成所有流程",

@@ -24,12 +24,12 @@ import Icon from "@/components/Icon.vue";
 import type { CommonFile } from "@/utils";
 
 const {
-  file,
+  file = undefined,
   size = 150,
   defaultText = "选择文件",
   defaultIcon = "add",
 } = defineProps<{
-  file: CommonFile | undefined;
+  file?: CommonFile | undefined;
   size?: number | string;
   defaultText?: string;
   defaultIcon?: string;
@@ -74,7 +74,6 @@ watch(
   width: var(--file-container-size);
   height: var(--file-container-size);
   border: 2px dashed var(--text-color-secondary);
-  cursor: pointer;
   display: flex;
   flex-direction: column;
   align-items: center;

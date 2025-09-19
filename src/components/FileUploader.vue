@@ -20,9 +20,10 @@
         v-model="choosedFile"
         :accepted-extensions="config.upload.acceptedExtensions"
         :accepted-mime-types="config.upload.acceptedMimeTypes"
+        :readonly="readonly"
         @selected="onSelected"
       >
-        <file-component :file="choosedFile" :size />
+        <FileComponent :file="choosedFile" :size />
       </file-chooser>
     </nut-badge>
     <view class="status">
@@ -46,8 +47,8 @@ import FileChooser from "@/components/FileChooser.vue";
 import Icon from "@/components/Icon.vue";
 import { useConfig } from "@/composables/config";
 import { UploadError, useUpload } from "@/composables/upload";
-import { File } from "@/types";
 import { platform } from "@/platforms";
+import { File } from "@/types";
 import { type CommonFile, humanizeBytes } from "@/utils";
 
 const file = defineModel<File.FileUpload>({ required: true });
@@ -56,11 +57,13 @@ const {
   projectId,
   fileSizeMin = 0,
   fileSizeMax = Infinity,
+  readonly,
   size = 150,
 } = defineProps<{
   projectId: number;
   fileSizeMin?: number | undefined;
   fileSizeMax?: number | undefined;
+  readonly?: boolean;
   size?: number | string;
 }>();
 
@@ -118,7 +121,9 @@ const statusText = computed(() => {
       return "";
   }
 });
-const hideClearButton = computed(() => file.value.file === undefined);
+const hideClearButton = computed(
+  () => file.value.file === undefined || readonly,
+);
 
 const onSelected = async () => {
   await nextTick();

@@ -21,7 +21,7 @@
 <script setup lang="ts">
 import { useConfig } from "@/composables/config";
 
-const show = defineModel<boolean>();
+const show = defineModel<boolean>({ required: true });
 
 const config = useConfig();
 </script>

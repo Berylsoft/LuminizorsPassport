@@ -11,8 +11,9 @@
       <router-link
         class="text project-name"
         :to="{ name: 'project-overview', params: { id: projectId } }"
-        >{{ projectDetail?.info.name }}</router-link
       >
+        {{ projectDetail?.info.name }}
+      </router-link>
       <Icon class="icon-arrow-right" name="chevron-right" :size="25" />
       <view class="text first-review">提交初审</view>
     </view>
@@ -65,13 +66,14 @@
               </span>
             </view>
           </template>
-          <file-uploader
+          <FileUploader
             v-if="!skipPassword"
             v-model="file"
             class="file-uploader"
             :file-size-min="projectDetail?.info.pre_submit_file_size_min"
             :file-size-max="projectDetail?.info.pre_submit_file_size_max"
             :project-id
+            :readonly="readOnly"
             @clear="onClear"
           />
         </FormItem>
@@ -103,7 +105,7 @@
             v-model.trim="comment"
             clearable
             limit-show
-            max-length="100"
+            :max-length="200"
             placeholder="请输入备注(选填)"
             :readonly="readOnly"
           />
@@ -139,9 +141,17 @@
       :project-id="projectId"
       is-first-review
     />
+    <nut-dialog
+      v-model:visible="showErrorDialog"
+      :close-on-click-overlay="false"
+      no-cancel-btn
+      @ok="router.back()"
+    >
+      <view class="error-dialog"> 当前状态无法提交初审 </view>
+    </nut-dialog>
     <nut-popup
       v-model:visible="showSkipInterface"
-      pop-class="skipping-interface"
+      pop-class="skipping-ui"
       round
       @click-overlay="hideSkipInterface"
     >
@@ -186,6 +196,7 @@ import { useConfig } from "@/composables/config";
 import { File, Project } from "@/types";
 import { platform } from "@/platforms";
 import SubmitSuccess from "@/components/SubmitSuccess.vue";
+import { cleanUnusedFiles } from "@/utils";
 
 const API = useAPI();
 const config = useConfig();
@@ -196,15 +207,20 @@ const projectId = ref(+route.params["id"]!);
 const projectDetail = ref<Project.ProjectDetail>();
 onMounted(async () => {
   projectDetail.value = await API.projectInfo({ pid: projectId.value });
+  if (!["Entered", "PreSubmitRejected"].includes(projectDetail.value.status))
+    showErrorDialog.value = true;
 });
 onBeforeRouteUpdate(async (to, from) => {
   if (to.params["id"] !== from.params["id"]) {
     projectId.value = +to.params["id"]!;
     projectDetail.value = await API.projectInfo({ pid: projectId.value });
+    if (!["Entered", "PreSubmitRejected"].includes(projectDetail.value.status))
+      showErrorDialog.value = true;
   }
 });
 
 const readOnly = ref(false);
+const showErrorDialog = ref(false);
 const showSubmitSuccess = ref(false);
 const showSkipInterface = ref(false);
 
@@ -257,7 +273,7 @@ const submit = async () => {
     if (error) throw new Error(error);
     if (skipPassword.value !== "") {
       submitButtonLoading.value = true;
-      const res = await API.preSubmitWithSkipPassword({
+      const res = await API.preSubmit({
         pid: projectId.value,
         name: username.value,
         comment: comment.value,
@@ -283,18 +299,12 @@ const submit = async () => {
       submitButtonLoading.value = true;
 
       // check file status
+      await cleanUnusedFiles([file.value.id!], projectId.value);
       const { files } = await API.listPendingFiles({
         pid: projectId.value,
       });
-      const fileIDs = files.map((file) => file.id);
-      if (!fileIDs.includes(file.value.id!))
+      if (files.length !== 1 || files[0]?.id !== file.value.id)
         throw new Error("本地文件与服务端不一致, 请重试");
-      else if (fileIDs.length > 1)
-        await Promise.all(
-          fileIDs
-            .filter((id) => id !== file.value.id)
-            .map(async (id) => await API.deleteFile({ file_id: id })),
-        );
 
       const res = await API.preSubmit({
         pid: projectId.value,
@@ -420,7 +430,11 @@ const saveSkipPassword = () => {
 .action-buttons-placeholder {
   height: 240px;
 }
-.skipping-interface {
+.error-dialog {
+  font-size: 32px;
+  color: var(--text-color-primary);
+}
+.skipping-ui {
   display: flex;
   flex-direction: column;
   align-items: center;

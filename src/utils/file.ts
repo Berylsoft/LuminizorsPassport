@@ -4,26 +4,31 @@ import {
   type FileTypeResult,
 } from "file-type";
 import { md5 } from "hash-wasm";
-import { TaroFS } from "./fs";
-import { createReadableStream } from "./misc";
+import { TaroFS } from "@/utils/fs";
+import { createReadableStream } from "@/utils/misc";
 
 export abstract class CommonFile {
   public abstract readonly name: string;
   public abstract readonly size: number;
+
   public abstract getType(): Promise<FileTypeResult | undefined>;
   public abstract getMD5(): Promise<string>;
+
   public abstract readBytes(
     offset: number,
     length?: number,
   ): Promise<ArrayBuffer>;
+
   public abstract toBlob(): Promise<Blob>;
 }
 
 export class WebFile extends CommonFile {
   private file: File;
+  private type: FileTypeResult | undefined;
+  private md5: string | undefined;
+
   public readonly name: string;
   public readonly size: number;
-
   constructor(file: File) {
     super();
     this.file = file;
@@ -31,12 +36,12 @@ export class WebFile extends CommonFile {
     this.size = file.size;
   }
 
-  public getType() {
-    return fileTypeFromBlob(this.file);
+  public async getType() {
+    return (this.type ??= await fileTypeFromBlob(this.file));
   }
 
   public async getMD5() {
-    return md5(await this.file.bytes());
+    return (this.md5 ??= await md5(await this.file.bytes()));
   }
 
   public readBytes(offset: number, length?: number) {
@@ -52,6 +57,9 @@ export class WebFile extends CommonFile {
 
 export class TaroFSFile extends CommonFile {
   private path: string;
+  private type: FileTypeResult | undefined;
+  private md5: string | undefined;
+
   public readonly name: string;
   public readonly size: number;
   constructor(options: { name: string; path: string; size: number }) {
@@ -62,21 +70,23 @@ export class TaroFSFile extends CommonFile {
   }
 
   public async getType() {
+    if (this.type) return this.type;
     const stream = createReadableStream(this.path);
     try {
-      return await fileTypeFromStream(stream);
+      this.type = await fileTypeFromStream(stream);
+      return this.type;
     } finally {
       await stream.cancel();
     }
   }
 
   public async getMD5() {
-    return (
+    return (this.md5 ??= (
       await TaroFS.getFileInfo({
         filePath: this.path,
         digestAlgorithm: "md5",
       })
-    ).digest!;
+    ).digest!);
   }
 
   public async readBytes(offset: number, length?: number) {

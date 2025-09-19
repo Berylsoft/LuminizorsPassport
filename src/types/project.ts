@@ -75,7 +75,7 @@ export namespace Project {
     pre_submit_detail: Review.FirstReview.Result;
     submit_detail: {
       Rejected: {
-        reason: Review.FinalReview.RejectReason;
+        reason: Review.FormalSubmit.RejectReason;
         detail?: string;
       };
     };

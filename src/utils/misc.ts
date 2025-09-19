@@ -1,7 +1,7 @@
 import { TaroFS } from "@/utils";
+import { useAPI } from "@/composables/api";
 
 const DEFAULT_CHUNK_SIZE = 4096;
-
 export const promisify =
   <T, U>(fn: (this: U, option: T) => void, thisArg?: U) =>
   (options: Omit<T, "callback" | "fail" | "success">) =>
@@ -163,4 +163,20 @@ export const humanizeBytes = (bytes: number, decimal = 2) => {
     else v /= 1e3;
   }
   return `${v.toFixed(decimal)}YB`;
+};
+
+export const cleanUnusedFiles = async (
+  usedFiles: number[],
+  projectId: number,
+) => {
+  const API = useAPI();
+  const { files } = await API.listPendingFiles({
+    pid: projectId,
+  });
+  await Promise.all(
+    files
+      .map((file) => file.id)
+      .filter((id) => !usedFiles.includes(id))
+      .map(async (id) => await API.deleteFile({ file_id: id })),
+  );
 };

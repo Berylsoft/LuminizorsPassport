@@ -19,11 +19,19 @@ export namespace File {
     Success,
     Error,
   }
+
   export interface FileUpload {
     status: UploadStatus;
     file?: CommonFile | undefined;
     abort?: AbortController;
     id?: number;
     error?: Error;
+  }
+
+  export type FileList = FileListItem[];
+
+  export interface FileListItem extends FileInfo {
+    type?: string | undefined;
+    selected?: boolean;
   }
 }

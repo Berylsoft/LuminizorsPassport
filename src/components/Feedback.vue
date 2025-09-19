@@ -24,7 +24,7 @@ import { useConfig } from "@/composables/config";
 import Icon from "@/components/Icon.vue";
 import { platform } from "@/platforms";
 
-const show = defineModel<boolean>();
+const show = defineModel<boolean>({ required: true });
 
 const config = useConfig();
 </script>

@@ -8,4 +8,5 @@ export * from "./login";
 export * from "./preSubmit";
 export * from "./projectInfo";
 export * from "./revokeAllTokens";
+export * from "./submit";
 export * from "./uploadFile";

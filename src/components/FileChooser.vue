@@ -3,7 +3,7 @@
     <template v-if="platform.name === 'web'">
       <label
         class="chooser-container"
-        :for="choosed ? 'file-input' : 'disabled'"
+        :for="allowInput || readonly ? 'file-input' : 'disabled'"
       >
         <slot></slot>
       </label>
@@ -30,17 +30,22 @@ import { computed, useTemplateRef } from "vue";
 import { platform } from "@/platforms";
 import { type CommonFile, WebFile, TaroFSFile } from "@/utils";
 
-const file = defineModel<CommonFile | undefined>();
-const { acceptedExtensions = [], acceptedMimeTypes = [] } = defineProps<{
+const file = defineModel<CommonFile | undefined>({ required: true });
+const {
+  acceptedExtensions = [],
+  acceptedMimeTypes = [],
+  readonly,
+} = defineProps<{
   acceptedExtensions?: string[];
   acceptedMimeTypes?: string[];
+  readonly?: boolean;
 }>();
 
 const emit = defineEmits<{
   selected: [CommonFile];
 }>();
 
-const choosed = computed(() => file.value === undefined);
+const allowInput = computed(() => file.value === undefined && !readonly);
 
 const onSelected = async (f: CommonFile) => {
   const type = await f.getType();
@@ -69,6 +74,7 @@ const onInputChange = async () => {
 
 // weapp
 const chooseFile = async () => {
+  if (readonly) return;
   const result = await Taro.chooseMessageFile({
     count: 1,
     type: "file",

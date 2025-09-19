@@ -10,7 +10,7 @@ export namespace Review {
       | "InvalidName";
   }
 
-  export namespace FinalReview {
+  export namespace FormalSubmit {
     export type Result =
       | "Passed"
       | { Rejected: { reason: RejectReason; detail?: string } };
