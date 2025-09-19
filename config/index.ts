@@ -34,6 +34,7 @@ export default defineConfig<"vite">((merge) => {
         "@tarojs/plugin-html",
         {
           enableCookie: true,
+          disabledBlob: false,
         },
       ],
       [
