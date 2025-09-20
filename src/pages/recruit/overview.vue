@@ -93,13 +93,24 @@
   </view>
   <view class="action-button-container">
     <nut-button
-      class="action-button"
+      v-if="showAttachmentButton"
+      class="button attachment"
+      :loading="attachmentButton.loading"
+      size="large"
+      type="default"
+      @click="() => attachmentButton.action()"
+    >
+      {{ attachmentButton.text }}
+    </nut-button>
+    <nut-button
+      class="button main"
       :disabled="mainButton.disabled"
       size="large"
       type="primary"
       @click="mainButton.action"
-      >{{ mainButton.text }}</nut-button
     >
+      {{ mainButton.text }}
+    </nut-button>
   </view>
   <view>
     <NDA
@@ -118,8 +129,10 @@ import img1 from "@/assets/image/2025.jpg";
 import Icon from "@/components/Icon.vue";
 import NDA from "@/components/NDA.vue";
 import { useAPI } from "@/composables/api";
+import { type AttachmentStatus, useAttachment } from "@/composables/attachment";
 import type { Review } from "@/types";
 
+const attachment = useAttachment();
 const API = useAPI();
 const route = useRoute();
 const router = useRouter();
@@ -132,6 +145,9 @@ onBeforeRouteUpdate(async (to, from) => {
   if (to.params["id"] !== from.params["id"]) {
     projectId.value = +to.params["id"]!;
     projectDetail.value = await API.projectInfo({ pid: projectId.value });
+    attachmentDownloadStatus.value = await attachment.getAttachmentStatus(
+      projectId.value,
+    );
   }
 });
 
@@ -367,6 +383,48 @@ watch(
   },
   { immediate: true },
 );
+
+const showAttachmentButton = computed(
+  () => projectDetail.value.have_attachment,
+);
+const attachmentButton = ref<{
+  text: string;
+  loading: boolean;
+  action: () => void;
+}>({
+  text: "下载附件",
+  loading: false,
+  action: () => void downloadAttachment(),
+});
+const attachmentDownloadStatus = ref<AttachmentStatus>(
+  await attachment.getAttachmentStatus(projectId.value),
+);
+const downloadAttachment = async () => {
+  const abort = new AbortController();
+  attachmentButton.value = {
+    text: "下载中",
+    loading: true,
+    action: () => {
+      abort.abort();
+    },
+  };
+  try {
+    const { open } = await attachment.downloadAttachment(
+      projectId.value,
+      abort.signal,
+      (progress) => {
+        attachmentButton.value.text = `下载中 (${Math.round(progress * 100).toString()}%)`;
+      },
+    );
+    attachmentButton.value = { text: "打开附件", loading: false, action: open };
+  } catch {
+    attachmentButton.value = {
+      text: "下载附件",
+      loading: false,
+      action: () => void downloadAttachment(),
+    };
+  }
+};
 </script>
 
 <style lang="scss">
@@ -465,11 +523,19 @@ watch(
   left: 0;
   bottom: 120px;
   display: flex;
+  align-items: center;
   justify-content: center;
   width: 100%;
 
-  .action-button {
-    width: 90%;
+  .button {
+    margin: 0 30px;
+
+    &.attachment {
+      flex: 1;
+    }
+    &.main {
+      flex: 2;
+    }
   }
 }
 </style>

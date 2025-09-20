@@ -35,6 +35,9 @@ export const toLowerCase = <T extends string>(method: T) =>
 export const uncapitalize = <T extends string>(str: T) =>
   (str.charAt(0).toLowerCase() + str.slice(1)) as Uncapitalize<T>;
 
+export const getErrMsg = (err: unknown) =>
+  err instanceof Error ? err.message : (err?.toString() ?? "unknown error");
+
 export const createReadableStream = (path: string) => {
   let file: string,
     p = 0;

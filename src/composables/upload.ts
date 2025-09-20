@@ -2,7 +2,12 @@ import axios from "axios";
 import { useAPI } from "@/composables/api";
 import { platform } from "@/platforms";
 import { File } from "@/types";
-import { type CommonFile, toLowerCase, uint8ArrayToHex } from "@/utils";
+import {
+  type CommonFile,
+  getErrMsg,
+  toLowerCase,
+  uint8ArrayToHex,
+} from "@/utils";
 
 const API = useAPI();
 
@@ -67,11 +72,10 @@ const upload = async (fileToUpload: File.FileUpload, projectId: number) => {
     } else if (err instanceof UploadError) {
       throw err;
     } else {
-      const msg =
-        err instanceof Error
-          ? err.message
-          : (err?.toString() ?? "Unknown error");
-      throw new UploadError(UploadErrors.Unknown, `上传失败:\n${msg}`);
+      throw new UploadError(
+        UploadErrors.Unknown,
+        `上传失败:\n${getErrMsg(err)}`,
+      );
     }
   }
 };
@@ -96,7 +100,7 @@ const continueUpload = async (
 
 const uploadFile = async (
   file: CommonFile,
-  presignedRequest: File.PresignedRequest,
+  presignedRequest: File.PresignedRequest<"POST" | "PUT" | "PATCH">,
   abortSignal: AbortSignal,
   maxRetries = 2,
 ) => {

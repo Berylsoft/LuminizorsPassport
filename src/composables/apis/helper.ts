@@ -6,6 +6,7 @@ import axios, {
 } from "axios";
 import { platform } from "@/platforms";
 import { useUserStore } from "@/stores/user";
+import { getErrMsg } from "@/utils";
 
 export class RequestHelper {
   static readonly bypassLoginRetry: unique symbol = Symbol("bypassLoginRetry");
@@ -20,7 +21,7 @@ export class RequestHelper {
       validateStatus: (code) => code < 300 || code >= 400,
     });
     this.axios.interceptors.response.use(undefined, (err) => {
-      const message = err instanceof Error ? err.message : "Unknown error";
+      const message = getErrMsg(err);
       void platform.showToast({
         title: `请求失败:\n ${message}`,
         duration: 3000,

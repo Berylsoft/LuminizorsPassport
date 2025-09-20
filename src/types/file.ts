@@ -1,9 +1,10 @@
-import { CommonFile } from "@/utils";
+import type { UpperCaseMethod } from "@/composables/api";
+import type { CommonFile } from "@/utils";
 
 export namespace File {
-  export interface PresignedRequest {
+  export interface PresignedRequest<T extends UpperCaseMethod> {
     headers: [string, string][];
-    method: "POST" | "PUT" | "PATCH";
+    method: T;
     uri: string;
   }
 

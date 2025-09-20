@@ -2,6 +2,7 @@ import { ref } from "vue";
 import { useAPI } from "@/composables/api";
 import { platform } from "@/platforms";
 import { useUserStore } from "@/stores/user";
+import { getErrMsg } from "@/utils";
 import { RequestHelper } from "./apis/helper";
 
 const API = useAPI();
@@ -30,9 +31,7 @@ const login = async () => {
       title: "登录失败",
       icon: "error",
     });
-    throw new Error(
-      `Login failed${err instanceof Error ? `: ${err.message}` : ""}`,
-    );
+    throw new Error(`Login failed${getErrMsg(err)}`);
   }
 };
 

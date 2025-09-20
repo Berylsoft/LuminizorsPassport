@@ -13,10 +13,15 @@ try {
  */
 export namespace TaroFS {
   // promisified APIs
+  export const access = promisify(fs["access"]);
   export const close = promisify(fs["close"]);
   export const fstat = promisify(fs["fstat"]);
   export const getFileInfo = promisify(fs["getFileInfo"]);
+  export const mkdir = promisify(fs["mkdir"]);
   export const open = promisify(fs["open"]);
   export const read = promisify(fs["read"]);
   export const readFile = promisify(fs["readFile"]);
+  export const rmdir = promisify(fs["rmdir"]);
+  export const stat = promisify(fs["stat"]);
+  export const write = promisify(fs["write"]);
 }

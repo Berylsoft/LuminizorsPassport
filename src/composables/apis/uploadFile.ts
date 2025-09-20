@@ -17,7 +17,7 @@ export namespace UploadFileStart {
     | {
         File: {
           file_id: number;
-          presigned_req: File.PresignedRequest;
+          presigned_req: File.PresignedRequest<"POST" | "PUT" | "PATCH">;
         };
       }
     | "CountReached"
@@ -49,7 +49,7 @@ export namespace UploadFileContinue {
   };
   export declare const Response: {
     Continue: {
-      presigned_req: File.PresignedRequest;
+      presigned_req: File.PresignedRequest<"POST" | "PUT" | "PATCH">;
     };
   };
 }

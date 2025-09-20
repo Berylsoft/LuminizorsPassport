@@ -1,5 +1,6 @@
 export * from "./agreeNDA";
 export * from "./deleteFile";
+export * from "./getAttachment";
 export * from "./getInfo";
 export * from "./joinProject";
 export * from "./listPendingFiles";
