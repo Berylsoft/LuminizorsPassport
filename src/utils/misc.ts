@@ -2,6 +2,8 @@ import { TaroFS } from "@/utils";
 import { useAPI } from "@/composables/api";
 
 const DEFAULT_CHUNK_SIZE = 4096;
+
+/** @todo allow call without `option` */
 export const promisify =
   <T, U>(fn: (this: U, option: T) => void, thisArg?: U) =>
   (options: Omit<T, "callback" | "fail" | "success">) =>
@@ -37,6 +39,8 @@ export const uncapitalize = <T extends string>(str: T) =>
 
 export const getErrMsg = (err: unknown) =>
   err instanceof Error ? err.message : (err?.toString() ?? "unknown error");
+
+export const clearArray = (arr: unknown[]) => void arr.splice(0);
 
 export const createReadableStream = (path: string) => {
   let file: string,

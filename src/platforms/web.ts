@@ -6,7 +6,10 @@ import type {
   SubscribeNotificationResult,
   SubscribeStatus,
 } from "./types";
+import { useConfig } from "@/composables/config";
 import { sleep } from "@/utils";
+
+const config = useConfig();
 
 export const name = "web";
 
@@ -60,7 +63,24 @@ export const onSystemThemeChange = (
     });
 };
 
-/** @todo simulated setting UI */
+export const getPrivacySetting = async () => ({
+  needAuthorization: localStorage.getItem("privacyPolicy") !== "accepted",
+  privacyContractName: `${config.name}隐私政策`,
+});
+
+/** @todo simulate privacy policy page */
+export const openPrivacyContract = async () => {
+  console.debug("openPrivacyContract");
+};
+
+/** @todo simulate authorize UI */
+export const requirePrivacyAuthorize = async () => {
+  console.debug("requirePrivacyAuthorize");
+  localStorage.setItem("privacyPolicy", "accepted");
+  return true;
+};
+
+/** @todo simulate setting page */
 export const openSetting = async (config?: {
   withSubscriptions?: boolean;
 }): Promise<OpenSettingResult> => {
@@ -90,7 +110,7 @@ export const getNoticificationSubscribeStatus = async (
   return notificationSetting[template] ?? "unconfigured";
 };
 
-/** @todo simulated subscription UI*/
+/** @todo simulated subscription UI */
 export const subscribeNotification = async (
   templates: string[],
 ): Promise<SubscribeNotificationResult> => {

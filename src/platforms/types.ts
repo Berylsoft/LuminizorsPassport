@@ -9,6 +9,9 @@ export interface Platform {
   setClipboard(text: string): Promise<void>;
   getSystemTheme(): "light" | "dark";
   onSystemThemeChange(callback: (theme: "light" | "dark") => void): void;
+  getPrivacySetting(): Promise<GetPrivacySettingResult>;
+  openPrivacyContract(): Promise<void>;
+  requirePrivacyAuthorize(): Promise<boolean>;
   openSetting(config?: {
     withSubscriptions?: boolean;
   }): Promise<OpenSettingResult>;
@@ -17,6 +20,11 @@ export interface Platform {
     templates: string[],
   ): Promise<SubscribeNotificationResult>;
   login(): Promise<string>;
+}
+
+export interface GetPrivacySettingResult {
+  needAuthorization: boolean;
+  privacyContractName: string;
 }
 
 export interface OpenSettingResult {

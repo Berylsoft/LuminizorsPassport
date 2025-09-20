@@ -4,6 +4,7 @@ import {
   SubscribeNotificationResult,
   SubscribeStatus,
 } from "./types";
+import { promisify } from "@/utils";
 
 export const name = "weapp";
 
@@ -36,6 +37,20 @@ export const onSystemThemeChange = (
   Taro.onThemeChange(({ theme }) => {
     callback(theme);
   });
+};
+
+export const getPrivacySetting = () => promisify(Taro["getPrivacySetting"])({});
+
+export const openPrivacyContract = async () =>
+  void (await promisify(Taro["openPrivacyContract"])({}));
+
+export const requirePrivacyAuthorize = async () => {
+  try {
+    await promisify(Taro["requirePrivacyAuthorize"])({});
+    return true;
+  } catch {
+    return false;
+  }
 };
 
 export const openSetting = (config?: {

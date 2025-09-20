@@ -21,11 +21,7 @@
   <view class="first-review-form">
     <nut-space direction="vertical" fill :gutter="10">
       <nut-cell size="large" :round-radius="20">
-        <FormItem
-          title="请输入用户名"
-          description="填写的称呼会出现在答谢名单等处, 请谨慎填写\n如果我们认为不合适, 将无法通过审核\n不要出现装饰符号、特殊符号"
-          :error="usernameError"
-        >
+        <FormItem title="请输入用户名" :error="usernameError">
           <template #description>
             填写的称呼会出现在答谢名单等处, 请谨慎填写<br />
             如果我们认为不合适, 将无法通过审核<br />

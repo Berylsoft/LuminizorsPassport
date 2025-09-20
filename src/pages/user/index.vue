@@ -40,7 +40,7 @@
     <view class="theme-selector">
       <nut-cell title="深色模式" :round-radius="10">
         <template #icon>
-          <Icon color="var(--theme-color-reverse)" name="paint_brush" />
+          <Icon class="cell-icon" name="paint_brush" />
         </template>
         <template #link>
           <nut-radio-group v-model="themeStore.theme" direction="horizontal">
@@ -80,7 +80,7 @@
         @click="showNotificationSetting = true"
       >
         <template #icon>
-          <Icon color="var(--theme-color-reverse)" name="alert" />
+          <Icon class="cell-icon" name="alert" />
         </template>
       </nut-cell>
     </view>
@@ -93,7 +93,19 @@
         @click="showFeedback = true"
       >
         <template #icon>
-          <Icon color="var(--theme-color-reverse)" name="chat-help" />
+          <Icon class="cell-icon" name="chat-help" />
+        </template>
+      </nut-cell>
+    </view>
+    <view class="privacy-policy">
+      <nut-cell
+        is-link
+        title="隐私政策"
+        :round-radius="10"
+        @click="platform.openPrivacyContract"
+      >
+        <template #icon>
+          <Icon class="cell-icon" name="shield-video" />
         </template>
       </nut-cell>
     </view>
@@ -105,11 +117,11 @@
         @click="showAbout = true"
       >
         <template #icon>
-          <Icon color="var(--theme-color-reverse)" name="info" />
+          <Icon class="cell-icon" name="info" />
         </template>
       </nut-cell>
     </view>
-    <view v-if="!userStore.isLoggedIn" class="logout">
+    <view v-if="userStore.isLoggedIn" class="logout">
       <nut-cell
         is-link
         :round-radius="10"
@@ -117,7 +129,7 @@
         @click="showSignOutDialog = true"
       >
         <template #icon>
-          <Icon color="var(--theme-color-reverse)" name="sign-out" />
+          <Icon class="cell-icon" name="sign-out" />
         </template>
       </nut-cell>
     </view>
@@ -146,6 +158,7 @@ import Icon from "@/components/Icon.vue";
 import { useAccount } from "@/composables/account";
 import { useThemeStore } from "@/stores/theme";
 import { useUserStore } from "@/stores/user";
+import { platform } from "@/platforms";
 
 const account = useAccount();
 const themeStore = useThemeStore();
@@ -174,5 +187,8 @@ const showSignOutDialog = ref(false);
 }
 .theme-selector .radio-button {
   margin-bottom: 0;
+}
+.cell-icon {
+  color: var(--theme-color-reverse);
 }
 </style>

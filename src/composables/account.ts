@@ -1,6 +1,5 @@
 import { ref } from "vue";
 import { useAPI } from "@/composables/api";
-import { platform } from "@/platforms";
 import { useUserStore } from "@/stores/user";
 import { getErrMsg } from "@/utils";
 import { RequestHelper } from "./apis/helper";
@@ -27,11 +26,7 @@ const login = async () => {
     });
     return id;
   } catch (err) {
-    void platform.showToast({
-      title: "登录失败",
-      icon: "error",
-    });
-    throw new Error(`Login failed${getErrMsg(err)}`);
+    throw new Error(`Login failed: ${getErrMsg(err)}`);
   }
 };
 
