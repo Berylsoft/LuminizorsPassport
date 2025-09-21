@@ -84,8 +84,7 @@
         </template>
       </nut-cell>
     </view>
-    <!-- temporary disable -->
-    <view v-if="false" class="feedback">
+    <view class="feedback">
       <nut-cell
         is-link
         :round-radius="10"

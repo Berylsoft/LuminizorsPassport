@@ -1,8 +1,8 @@
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import mime from "mime/lite";
 import { version } from "./package.json";
+import QRCode from "@/assets/image/feedback.png";
 import Logo from "@/assets/image/logo.png";
-import QRCode from "@/assets/image/feedback.jpg";
 
 const acceptedMimeTypes = [
   "audio/aac",
@@ -23,7 +23,7 @@ export const config: LuminizorsConfig = {
     process.env["LUMINIZORS_BACKEND_SERVER"] ?? "https://api.luminizors.com",
   feedback: {
     groupQRCode: QRCode,
-    groupID: "1047336844",
+    groupID: "1047594288",
   },
   logo: Logo,
   NDA: {
