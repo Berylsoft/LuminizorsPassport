@@ -20,7 +20,7 @@ export const config: LuminizorsConfig = {
   version,
   appID: process.env.TARO_APP_ID,
   backendServer:
-    process.env.LUMINIZORS_BACKEND_SERVER ?? "https://api.luminizors.com",
+    process.env.LUMINIZORS_BACKEND_SERVER ?? "https://api.luminizors.net",
   feedback: {
     groupQRCode: QRCode,
     groupID: "1047594288",
