@@ -20,7 +20,7 @@ export const config: LuminizorsConfig = {
   version,
   appID: process.env.TARO_APP_ID,
   backendServer:
-    process.env["LUMINIZORS_BACKEND_SERVER"] ?? "https://api.luminizors.com",
+    process.env.LUMINIZORS_BACKEND_SERVER ?? "https://api.luminizors.com",
   feedback: {
     groupQRCode: QRCode,
     groupID: "1047594288",
@@ -30,8 +30,7 @@ export const config: LuminizorsConfig = {
     minReadingTime: 5,
   },
   notification: {
-    templates:
-      process.env["LUMINIZORS_NOTIFICATION_TEMPLATES"]?.split(",") || [],
+    templates: process.env.LUMINIZORS_NOTIFICATION_TEMPLATES?.split(",") || [],
   },
   upload: {
     acceptedExtensions: acceptedMimeTypes.flatMap((m) => [

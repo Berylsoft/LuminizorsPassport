@@ -3,7 +3,7 @@ export default defineAppConfig({
   window: {
     backgroundTextStyle: "light",
     navigationBarBackgroundColor: "#fff",
-    navigationBarTitleText: "LuminizorsPassport",
+    navigationBarTitleText: "析光通",
     navigationBarTextStyle: "black",
   },
   darkmode: true,

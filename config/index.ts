@@ -84,6 +84,9 @@ export default defineConfig<"vite">((merge) => {
       sassLoaderOption: {
         silenceDeprecations: ["import", "legacy-js-api"],
       },
+      optimizeMainPackage: {
+        enable: true,
+      },
     },
     h5: {
       publicPath: "/",
