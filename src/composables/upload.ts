@@ -11,7 +11,7 @@ import {
 
 const API = useAPI();
 
-const upload = async (fileToUpload: File.FileUpload, projectId: number) => {
+const _upload = async (fileToUpload: File.FileUpload, projectId: number) => {
   if (!fileToUpload.file)
     throw new UploadError(UploadErrors.Unknown, "上传失败: 文件不存在");
   if (!fileToUpload.abort) fileToUpload.abort = new AbortController();
@@ -123,7 +123,7 @@ const uploadFile = async (
   }
 };
 
-export const useUpload = () => ({ upload });
+export const useUpload = () => ({ upload: _upload });
 
 export enum UploadErrors {
   Cancelled,
