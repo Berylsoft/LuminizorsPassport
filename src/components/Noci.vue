@@ -1,6 +1,6 @@
 <template>
   <text
-    :class="['iconfont', 'nut-icon', name, animateClass]"
+    :class="['luminizors-icon', 'nut-icon', name, animateClass]"
     :style="{ color, fontSize: size, width: size, height: size }"
   />
 </template>

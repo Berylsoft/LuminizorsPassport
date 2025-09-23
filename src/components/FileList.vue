@@ -75,7 +75,7 @@ const getIcon = (file: File.FileListItem) => {
     case "video":
       return "video";
     default:
-      return "document-question";
+      return "document-question-mark";
   }
 };
 

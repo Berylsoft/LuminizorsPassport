@@ -59,7 +59,7 @@ watch(
           icon.value = "video";
           break;
         default:
-          icon.value = "document-question";
+          icon.value = "document-question-mark";
           break;
       }
     } else {
