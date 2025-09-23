@@ -1,14 +1,14 @@
 import NutUIResolver from "@nutui/auto-import-resolver";
 import { defineConfig, type UserConfigExport } from "@tarojs/cli";
-import ComponentsPlugin from "unplugin-vue-components/vite";
-import { searchForWorkspaceRoot } from "vite";
-import TSConfigPathPlugin from "vite-tsconfig-paths";
+import path from "path";
+import TsconfigPathsPlugin from "tsconfig-paths-webpack-plugin";
+import ComponentsPlugin from "unplugin-vue-components/webpack";
 
 import devConfig from "./dev";
 import prodConfig from "./prod";
 
-export default defineConfig<"vite">((merge) => {
-  const baseConfig: UserConfigExport<"vite"> = {
+export default defineConfig((merge) => {
+  const baseConfig: UserConfigExport = {
     projectName: "LuminizorsPassport",
     date: "2025-5-30",
     designWidth(input) {
@@ -30,8 +30,9 @@ export default defineConfig<"vite">((merge) => {
     sourceRoot: "src",
     outputRoot: "dist",
     plugins: [
+      "@tarojs/plugin-html",
       [
-        "@tarojs/plugin-html",
+        "@tarojs/plugin-http",
         {
           enableCookie: true,
           disabledBlob: false,
@@ -56,16 +57,18 @@ export default defineConfig<"vite">((merge) => {
     },
     framework: "vue3",
     compiler: {
-      type: "vite",
-      vitePlugins: [
-        ComponentsPlugin({
-          resolvers: [NutUIResolver({ taro: true, importStyle: "sass" })],
-        }),
-        TSConfigPathPlugin(),
-      ],
+      type: "webpack5",
+      prebundle: {
+        enable: false,
+        force: true,
+        exclude: ["@nutui/nutui-taro", "@nutui/icons-vue-taro"],
+      },
+    },
+    cache: {
+      enable: false,
     },
     sass: {
-      data: '@use "@nutui/nutui-taro/dist/styles/variables-jdt.scss" as *;',
+      data: '@import "@nutui/nutui-taro/dist/styles/variables-jdt.scss";',
     },
     mini: {
       postcss: {
@@ -76,13 +79,29 @@ export default defineConfig<"vite">((merge) => {
         cssModules: {
           enable: false,
           config: {
-            namingPattern: "module",
+            namingPattern: "global",
             generateScopedName: "[name]__[local]___[hash:base64:5]",
           },
         },
       },
+      compile: {
+        include: [path.resolve(__dirname, "../luminizors.config.ts")],
+      },
       sassLoaderOption: {
-        silenceDeprecations: ["import", "legacy-js-api"],
+        sassOptions: {
+          silenceDeprecations: ["import", "legacy-js-api"],
+        },
+      },
+      webpackChain(chain) {
+        chain.resolve.plugin("tsconfig-paths").use(TsconfigPathsPlugin);
+        chain.plugin("unplugin-vue-components").use(
+          ComponentsPlugin({
+            resolvers: [NutUIResolver({ taro: true })],
+          }),
+        );
+      },
+      miniCssExtractPluginOption: {
+        ignoreOrder: true,
       },
       optimizeMainPackage: {
         enable: true,
@@ -91,7 +110,10 @@ export default defineConfig<"vite">((merge) => {
     h5: {
       publicPath: "/",
       staticDirectory: "static",
-
+      output: {
+        filename: "js/[name].[hash:8].js",
+        chunkFilename: "js/[name].[chunkhash:8].js",
+      },
       miniCssExtractPluginOption: {
         ignoreOrder: true,
         filename: "css/[name].[hash].css",
@@ -110,14 +132,21 @@ export default defineConfig<"vite">((merge) => {
           },
         },
       },
-      sassLoaderOption: {
-        silenceDeprecations: ["import", "legacy-js-api"],
+      compile: {
+        include: [path.resolve(__dirname, "../luminizors.config.ts")],
       },
-      devServer: {
-        open: false,
-        fs: {
-          allow: [searchForWorkspaceRoot(process.cwd())],
+      sassLoaderOption: {
+        sassOptions: {
+          silenceDeprecations: ["import", "legacy-js-api"],
         },
+      },
+      webpackChain(chain) {
+        chain.resolve.plugin("tsconfig-paths").use(TsconfigPathsPlugin);
+        chain.plugin("unplugin-vue-components").use(
+          ComponentsPlugin({
+            resolvers: [NutUIResolver({ taro: true })],
+          }),
+        );
       },
     },
   };

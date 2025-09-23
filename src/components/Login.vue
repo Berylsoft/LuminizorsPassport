@@ -10,7 +10,7 @@
       <view class="login-title">注册或登录</view>
     </view>
     <view class="privacy-policy">
-      <Icon
+      <Noci
         class="checkbox"
         :class="acceptPrivacyPolicy ? 'selected' : ''"
         :name="acceptPrivacyPolicy ? 'checkmark' : ''"
@@ -30,7 +30,7 @@
       @click="login"
     >
       <template #icon>
-        <Icon name="wechat" />
+        <Noci name="wechat" />
       </template>
       微信授权登录
     </nut-button>
@@ -42,7 +42,7 @@
       @click="openImportUI"
     >
       <template #icon>
-        <Icon name="arrow-import" />
+        <Noci name="arrow-import" />
       </template>
       导入数据并登录
     </nut-button>
@@ -113,7 +113,7 @@
 import KonamiCode from "konami-code-js";
 import { ref, watch } from "vue";
 import FormItem from "./FormItem.vue";
-import Icon from "@/components/Icon.vue";
+import Noci from "@/components/Noci.vue";
 import { _loginPromises, _showLogin } from "@/composables/account";
 import { useAPI } from "@/composables/api";
 import { platform } from "@/platforms";
@@ -310,9 +310,10 @@ const cancelLogin = () => {
   }
   .privacy-policy {
     display: flex;
+    flex-direction: row wrap;
     align-items: center;
     margin: 15px 0;
-    font-size: 28px;
+    font-size: 24px;
     color: var(--text-color-secondary);
     --nut-checkbox-margin-right: 0;
 

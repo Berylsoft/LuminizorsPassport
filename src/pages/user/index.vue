@@ -10,7 +10,7 @@
       >
         <template #icon>
           <nut-avatar size="large">
-            <Icon name="person" :size="40" />
+            <Noci name="person" :size="40" />
           </nut-avatar>
         </template>
         <template #desc>
@@ -28,7 +28,7 @@
       >
         <template #icon>
           <nut-avatar size="large">
-            <Icon name="person" :size="80" />
+            <Noci name="person" :size="80" />
           </nut-avatar>
         </template>
         <template #desc>
@@ -40,7 +40,7 @@
     <view class="theme-selector">
       <nut-cell title="深色模式" :round-radius="10">
         <template #icon>
-          <Icon class="cell-icon" name="paint_brush" />
+          <Noci class="cell-icon" name="paint-brush" />
         </template>
         <template #link>
           <nut-radio-group v-model="themeStore.theme" direction="horizontal">
@@ -50,7 +50,7 @@
               shape="button"
               size="mini"
             >
-              <Icon name="arrow-sync" :size="32" />
+              <Noci name="arrow-sync" :size="32" />
             </nut-radio>
             <nut-radio
               class="radio-button"
@@ -58,7 +58,7 @@
               shape="button"
               size="mini"
             >
-              <Icon name="weather-sunny" :size="32" />
+              <Noci name="weather-sunny" :size="32" />
             </nut-radio>
             <nut-radio
               class="radio-button"
@@ -66,7 +66,7 @@
               shape="button"
               size="mini"
             >
-              <Icon name="dark-theme" :size="32" />
+              <Noci name="dark-theme" :size="32" />
             </nut-radio>
           </nut-radio-group>
         </template>
@@ -80,7 +80,7 @@
         @click="showNotificationSetting = true"
       >
         <template #icon>
-          <Icon class="cell-icon" name="alert" />
+          <Noci class="cell-icon" name="alert" />
         </template>
       </nut-cell>
     </view>
@@ -92,7 +92,7 @@
         @click="showFeedback = true"
       >
         <template #icon>
-          <Icon class="cell-icon" name="chat-help" />
+          <Noci class="cell-icon" name="chat-help" />
         </template>
       </nut-cell>
     </view>
@@ -104,7 +104,7 @@
         @click="platform.openPrivacyContract"
       >
         <template #icon>
-          <Icon class="cell-icon" name="shield-video" />
+          <Noci class="cell-icon" name="shield-video" />
         </template>
       </nut-cell>
     </view>
@@ -116,7 +116,7 @@
         @click="showAbout = true"
       >
         <template #icon>
-          <Icon class="cell-icon" name="info" />
+          <Noci class="cell-icon" name="info" />
         </template>
       </nut-cell>
     </view>
@@ -128,7 +128,7 @@
         @click="showSignOutDialog = true"
       >
         <template #icon>
-          <Icon class="cell-icon" name="sign-out" />
+          <Noci class="cell-icon" name="sign-out" />
         </template>
       </nut-cell>
     </view>
@@ -153,7 +153,7 @@ import { ref } from "vue";
 import About from "@/components/About.vue";
 import Feedback from "@/components/Feedback.vue";
 import NotificationSetting from "@/components/NotificationSetting.vue";
-import Icon from "@/components/Icon.vue";
+import Noci from "@/components/Noci.vue";
 import { useAccount } from "@/composables/account";
 import { useThemeStore } from "@/stores/theme";
 import { useUserStore } from "@/stores/user";

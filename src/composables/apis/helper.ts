@@ -4,12 +4,14 @@ import axios, {
   AxiosRequestConfig,
   type AxiosResponse,
 } from "axios";
+import { useAccount } from "@/composables/account";
 import { platform } from "@/platforms";
 import { useUserStore } from "@/stores/user";
 import { getErrMsg } from "@/utils";
 
 export class RequestHelper {
-  static readonly bypassLoginRetry: unique symbol = Symbol("bypassLoginRetry");
+  static readonly bypassLoginRetry =
+    "__luminizors_internal_RequestHelper_bypassLoginRetry";
   protected axios: AxiosInstance;
 
   constructor(config: RequestHelper.Config) {
@@ -54,6 +56,7 @@ export class RequestHelper {
             url,
           });
         } else {
+          const account = useAccount();
           const userStore = useUserStore();
           if (userStore.isLoggedIn) {
             userStore.id = "";
@@ -67,11 +70,12 @@ export class RequestHelper {
             });
           }
 
+          // try to login
+          await account.login();
+
           // retry request
           config[RequestHelper.bypassLoginRetry] = true;
-          const res = await axios<T, RequestHelper.CommonResponse<T>>(
-            response.config,
-          );
+          const res = await axios<T, RequestHelper.CommonResponse<T>>(config);
           return await this.handleResponse(res);
         }
       } else {

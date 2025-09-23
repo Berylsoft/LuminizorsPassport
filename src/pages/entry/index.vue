@@ -22,7 +22,7 @@
             :name
           >
             <template #icon>
-              <Icon :name="icon" :size="50" />
+              <Noci :name="icon" :size="50" />
             </template>
           </nut-tabbar-item>
         </nut-tabbar>
@@ -38,7 +38,7 @@ import Taro from "@tarojs/taro";
 import { onMounted, ref, watch } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import Login from "@/components/Login.vue";
-import Icon from "@/components/Icon.vue";
+import Noci from "@/components/Noci.vue";
 import Toast from "@/components/Toast.vue";
 import { useConfig } from "@/composables/config";
 import { platform } from "@/platforms";
@@ -71,8 +71,8 @@ const tabSwitch = (item: { name: NavItem }) =>
 const setTitleAndActivatedTab = async (_path: string) => {
   activatedTab.value =
     (Object.entries(navList)
-      .sort((a, b) => a[1].target.length - b[1].target.length)
-      .findLast(([, { target }]) => _path.startsWith(`/${target}`))?.[0] as
+      .sort((a, b) => b[1].target.length - a[1].target.length)
+      .find(([, { target }]) => _path.startsWith(`/${target}`))?.[0] as
       | NavItem
       | undefined) ?? "";
   await platform.setTitle(

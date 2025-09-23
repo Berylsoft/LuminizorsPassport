@@ -1,5 +1,5 @@
 <template>
-  <i
+  <text
     :class="['iconfont', 'nut-icon', name, animateClass]"
     :style="{ color, fontSize: size, width: size, height: size }"
   />
@@ -21,7 +21,7 @@ const {
   animate?: string | undefined;
 }>();
 
-const name = computed(() => `icon-${_name.replaceAll("-", "_")}`);
+const name = computed(() => `icon-${_name.replace(/-/g, "_")}`);
 const animateClass = computed(() =>
   animate ? `nut-icon-am-${animate}  nut-icon-am-infinite` : "",
 );

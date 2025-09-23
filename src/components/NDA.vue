@@ -11,7 +11,7 @@
       <nut-backtop :bottom="100" :right="40" :distance="200" height="50vh">
         <template #content>
           <view class="content">
-            {{ props.project.nda_info?.["Pending"] }}
+            {{ props.project?.nda_info?.["Pending"] }}
           </view>
         </template>
       </nut-backtop>
@@ -43,7 +43,7 @@ import { Project } from "@/types";
 
 const show = defineModel<boolean>();
 const props = defineProps<{
-  project: Project.ProjectDetail;
+  project: Project.ProjectDetail | undefined;
   projectId: number;
 }>();
 const emit = defineEmits(["onSuccess"]);

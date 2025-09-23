@@ -1,3 +1,4 @@
+import "blob.js";
 import {
   fileTypeFromBlob,
   fileTypeFromStream,

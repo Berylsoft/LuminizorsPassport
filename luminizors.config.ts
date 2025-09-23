@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import mime from "mime/lite";
-import { version } from "./package.json";
+import packageInfo from "./package.json";
 import QRCode from "@/assets/image/feedback.png";
 import Logo from "@/assets/image/logo.png";
 
@@ -17,7 +17,7 @@ const acceptedMimeTypes = [
 
 export const config: LuminizorsConfig = {
   name: "析光通",
-  version,
+  version: packageInfo.version,
   appID: process.env.TARO_APP_ID,
   backendServer:
     process.env.LUMINIZORS_BACKEND_SERVER ?? "https://api.luminizors.net",
@@ -33,9 +33,9 @@ export const config: LuminizorsConfig = {
     templates: process.env.LUMINIZORS_NOTIFICATION_TEMPLATES?.split(",") || [],
   },
   upload: {
-    acceptedExtensions: acceptedMimeTypes.flatMap((m) => [
-      ...(mime.getAllExtensions(m) ?? []),
-    ]),
+    acceptedExtensions: acceptedMimeTypes.flatMap(
+      (m) => mime.getExtension(m) ?? [],
+    ),
     acceptedMimeTypes,
   },
 };

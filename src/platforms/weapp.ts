@@ -65,9 +65,14 @@ export const getNoticificationSubscribeStatus = async (
   });
   if (!subscriptionsSetting.mainSwitch) {
     return "disabled";
-  } else if (!subscriptionsSetting.itemSettings[template]) {
+  } else if (
+    !(
+      subscriptionsSetting.itemSettings as Record<string, string> | undefined
+    )?.[template]
+  ) {
     return "unconfigured";
   } else {
+    console.log(subscriptionsSetting.itemSettings[template]);
     return subscriptionsSetting.itemSettings[template] === "accept"
       ? "enabled"
       : "disabled";

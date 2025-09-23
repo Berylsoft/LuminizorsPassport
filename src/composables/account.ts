@@ -4,8 +4,6 @@ import { useUserStore } from "@/stores/user";
 import { getErrMsg } from "@/utils";
 import { RequestHelper } from "./apis/helper";
 
-const API = useAPI();
-
 /** @private */
 export const _loginPromises: [
   (value: string) => void,
@@ -31,6 +29,7 @@ const login = async () => {
 };
 
 const checkLoginStatus = async () => {
+  const API = useAPI();
   const userStore = useUserStore();
   try {
     const { id } = await API.getInfo(null, {
@@ -44,6 +43,7 @@ const checkLoginStatus = async () => {
 };
 
 const signOut = async () => {
+  const API = useAPI();
   const userStore = useUserStore();
   await API.revokeAllTokens();
   userStore.id = "";

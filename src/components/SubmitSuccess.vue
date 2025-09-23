@@ -7,7 +7,7 @@
     round
   >
     <view class="success-icon">
-      <Icon name="checkmark-circle" :size="150" />
+      <Noci name="checkmark-circle" :size="150" />
     </view>
     <view class="success-text">
       {{ isFirstReview ? "初审提交" : "正式提交" }}成功, 请耐心等待审核结果
@@ -44,7 +44,7 @@
 <script setup lang="ts">
 import { ref, watch } from "vue";
 import { useRouter } from "vue-router";
-import Icon from "@/components/Icon.vue";
+import Noci from "@/components/Noci.vue";
 import { useNotification } from "@/composables/notification";
 import { platform, type SubscribeStatus } from "@/platforms";
 import { sleep } from "@/utils";

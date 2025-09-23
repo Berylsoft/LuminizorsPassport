@@ -15,16 +15,16 @@
         </view>
       </template>
       <template #icon>
-        <Icon class="file-icon" :name="getIcon(file)" />
+        <Noci class="file-icon" :name="getIcon(file)" />
       </template>
       <template #link>
-        <Icon
+        <Noci
           v-if="props.selectable"
           class="file-select"
           :name="file.selected ? 'checkmark' : ''"
           :size="26"
         />
-        <Icon
+        <Noci
           v-if="props.deleteable"
           class="file-delete"
           name="delete"
@@ -45,7 +45,7 @@
 <script setup lang="ts">
 import mime from "mime/lite";
 import { ref } from "vue";
-import Icon from "@/components/Icon.vue";
+import Noci from "@/components/Noci.vue";
 import { platform } from "@/platforms";
 import { File } from "@/types";
 

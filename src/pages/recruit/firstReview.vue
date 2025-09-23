@@ -2,7 +2,7 @@
   <nut-sticky>
     <view class="first-review-header">
       <view class="text recruit">征集</view>
-      <Icon
+      <Noci
         class="icon-arrow-right"
         name="chevron-right"
         color="var(--text-color-secondary)"
@@ -14,7 +14,7 @@
       >
         {{ projectDetail?.info.name }}
       </router-link>
-      <Icon class="icon-arrow-right" name="chevron-right" :size="25" />
+      <Noci class="icon-arrow-right" name="chevron-right" :size="25" />
       <view class="text first-review">提交初审</view>
     </view>
   </nut-sticky>
@@ -185,7 +185,7 @@
 import { computed, onMounted, ref, watch } from "vue";
 import { onBeforeRouteUpdate, useRoute, useRouter } from "vue-router";
 import FileUploader from "@/components/FileUploader.vue";
-import Icon from "@/components/Icon.vue";
+import Noci from "@/components/Noci.vue";
 import FormItem from "@/components/FormItem.vue";
 import { useAPI } from "@/composables/api";
 import { useConfig } from "@/composables/config";

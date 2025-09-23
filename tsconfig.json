@@ -1,11 +1,11 @@
 {
   "extends": "@tsconfig/strictest/tsconfig.json",
   "compilerOptions": {
-    "target": "esnext",
-    "module": "esnext",
+    "target": "es2017",
+    "module": "commonjs",
     "removeComments": false,
     "preserveConstEnums": true,
-    "moduleResolution": "bundler",
+    "moduleResolution": "node",
     "experimentalDecorators": true,
     "noImplicitAny": false,
     "allowSyntheticDefaultImports": true,

@@ -8,7 +8,7 @@
       '--file-container-size': sizeTransformed,
     }"
   >
-    <Icon
+    <Noci
       class="file-icon"
       :name="icon"
       size="calc(var(--file-container-size) / 2.5)"
@@ -20,7 +20,7 @@
 <script setup lang="ts">
 import { computed, ref, watch } from "vue";
 import Taro from "@tarojs/taro";
-import Icon from "@/components/Icon.vue";
+import Noci from "@/components/Noci.vue";
 import type { CommonFile } from "@/utils";
 
 const {

@@ -9,7 +9,7 @@
       color="var(--text-color-secondary)"
     >
       <template #icon>
-        <Icon
+        <Noci
           class="clear-icon"
           name="dismiss"
           size="calc(var(--file-uploader-size) / 5)"
@@ -27,7 +27,7 @@
       </file-chooser>
     </nut-badge>
     <view class="status">
-      <Icon
+      <Noci
         class="status-icon"
         :name="icon.name"
         :color="icon.color"
@@ -44,7 +44,7 @@ import Taro from "@tarojs/taro";
 import { computed, nextTick, ref, watch } from "vue";
 import FileComponent from "@/components/File.vue";
 import FileChooser from "@/components/FileChooser.vue";
-import Icon from "@/components/Icon.vue";
+import Noci from "@/components/Noci.vue";
 import { useConfig } from "@/composables/config";
 import { UploadError, useUpload } from "@/composables/upload";
 import { platform } from "@/platforms";

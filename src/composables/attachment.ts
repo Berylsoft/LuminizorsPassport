@@ -1,4 +1,5 @@
 import axios from "axios";
+import "blob.js";
 import { useAPI } from "@/composables/api";
 import { useAttachmentStore } from "@/stores/attachment";
 import { platform } from "@/platforms";

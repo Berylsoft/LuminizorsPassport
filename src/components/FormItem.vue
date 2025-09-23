@@ -13,14 +13,14 @@
     <slot></slot>
     <view v-if="error || $slots['error']" class="error">
       <slot name="error">
-        <Icon class="error-icon" name="info" :size="25" />{{ error }}
+        <Noci class="error-icon" name="info" :size="25" />{{ error }}
       </slot>
     </view>
   </view>
 </template>
 
 <script setup lang="ts">
-import Icon from "@/components/Icon.vue";
+import Noci from "@/components/Noci.vue";
 
 defineProps<{
   title: string;

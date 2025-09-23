@@ -13,7 +13,7 @@
     >
       {{ config.feedback.groupID }}
       <span class="copy-button">
-        <Icon name="copy" />
+        <Noci name="copy" />
       </span>
     </a>
   </nut-popup>
@@ -21,7 +21,7 @@
 
 <script setup lang="ts">
 import { useConfig } from "@/composables/config";
-import Icon from "@/components/Icon.vue";
+import Noci from "@/components/Noci.vue";
 import { platform } from "@/platforms";
 
 const show = defineModel<boolean>({ required: true });
@@ -36,7 +36,6 @@ const config = useConfig();
 
   .qrcode {
     width: 500px;
-    height: auto;
     border-radius: 20px;
   }
   .group-number {
@@ -44,6 +43,7 @@ const config = useConfig();
     cursor: pointer;
   }
   .copy-button {
+    display: inline;
     margin-left: 5px;
     color: var(--text-color-secondary);
     vertical-align: middle;

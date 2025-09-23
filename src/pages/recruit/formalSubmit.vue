@@ -2,7 +2,7 @@
   <nut-sticky>
     <view class="formal-submit-header">
       <view class="text recruit">征集</view>
-      <Icon
+      <Noci
         class="icon-arrow-right"
         name="chevron-right"
         color="var(--text-color-secondary)"
@@ -14,7 +14,7 @@
       >
         {{ projectDetail?.info.name }}
       </router-link>
-      <Icon class="icon-arrow-right" name="chevron-right" :size="25" />
+      <Noci class="icon-arrow-right" name="chevron-right" :size="25" />
       <view class="text formal-submit">正式提交</view>
     </view>
   </nut-sticky>
@@ -109,7 +109,7 @@ import { onMounted, ref, watch } from "vue";
 import { onBeforeRouteUpdate, useRoute, useRouter } from "vue-router";
 import FileList from "@/components/FileList.vue";
 import FileUploader from "@/components/FileUploader.vue";
-import Icon from "@/components/Icon.vue";
+import Noci from "@/components/Noci.vue";
 import FormItem from "@/components/FormItem.vue";
 import SubmitSuccess from "@/components/SubmitSuccess.vue";
 import { useAPI } from "@/composables/api";

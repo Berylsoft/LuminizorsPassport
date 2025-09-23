@@ -2,12 +2,12 @@
   <nut-cell class="project-overview" size="large" :round-radius="20">
     <nut-space direction="vertical" fill :gutter="15">
       <view class="banner">
-        <img class="banner-image" :src="img1" :alt="projectDetail.info.name" />
+        <img class="banner-image" :src="img1" :alt="projectDetail?.info.name" />
       </view>
       <view class="project-info">
         <view>
           <view class="project-name">
-            {{ projectDetail.info.name }}
+            {{ projectDetail?.info.name }}
           </view>
           <view class="end-time">
             <span v-if="!isEnded">
@@ -26,9 +26,9 @@
             {{ statusText }}
           </span>
           <span @click="refresh">
-            <Icon
-              class="refresh-button nut-icon-am-infinite"
-              :class="{ 'nut-icon-am-rotate': refreshing }"
+            <Noci
+              :animate="refreshing ? 'rotate' : undefined"
+              class="refresh-button"
               name="arrow-clockwise"
               :size="48"
             />
@@ -44,10 +44,10 @@
     size="large"
   >
     <view class="title">
-      <Icon class="icon" :name="detailCell.icon" />{{ detailCell.title }}
+      <Noci class="icon" :name="detailCell.icon" />{{ detailCell.title }}
     </view>
     <view class="content">
-      <template v-if="projectDetail.status === 'PreSubmitPassed'">
+      <template v-if="projectDetail?.status === 'PreSubmitPassed'">
         您通过了初审, 分配到
         <nut-tag
           v-for="group in groups"
@@ -58,13 +58,13 @@
           >{{ groupMapping[group].text }}组</nut-tag
         >
       </template>
-      <template v-else-if="projectDetail.status === 'PreSubmitRejected'">
+      <template v-else-if="projectDetail?.status === 'PreSubmitRejected'">
         很遗憾, 您未能通过审核, 原因如下:
         <view class="reason">{{
           getReasonText(projectDetail.pre_submit_detail.Rejected.reason)
         }}</view>
       </template>
-      <template v-else-if="projectDetail.status === 'SubmitPassed'">
+      <template v-else-if="projectDetail?.status === 'SubmitPassed'">
         您已完成所有步骤, 恭喜您成为<nut-tag
           v-for="group in groups"
           :key="group"
@@ -74,7 +74,7 @@
           >{{ groupMapping[group].text }}组</nut-tag
         >成员
       </template>
-      <template v-else-if="projectDetail.status === 'SubmitRejected'">
+      <template v-else-if="projectDetail?.status === 'SubmitRejected'">
         很遗憾, 您未能通过审核, 原因如下:
         <view class="reason">{{
           getReasonText(projectDetail.submit_detail.Rejected.reason)
@@ -126,11 +126,11 @@
 import { computed, ref, watch } from "vue";
 import { onBeforeRouteUpdate, useRoute, useRouter } from "vue-router";
 import img1 from "@/assets/image/2025.jpg";
-import Icon from "@/components/Icon.vue";
+import Noci from "@/components/Noci.vue";
 import NDA from "@/components/NDA.vue";
 import { useAPI } from "@/composables/api";
 import { type AttachmentStatus, useAttachment } from "@/composables/attachment";
-import type { Review } from "@/types";
+import type { Project, Review } from "@/types";
 
 const attachment = useAttachment();
 const API = useAPI();
@@ -140,18 +140,25 @@ const router = useRouter();
 const showNDA = ref(false);
 
 const projectId = ref(+route.params["id"]!);
-const projectDetail = ref(await API.projectInfo({ pid: projectId.value }));
+const projectDetail = ref<Project.ProjectDetail>();
+const updateProjectDetail = async () => {
+  projectDetail.value = await API.projectInfo({ pid: projectId.value });
+  attachmentDownloadStatus.value = await attachment.getAttachmentStatus(
+    projectId.value,
+  );
+};
 onBeforeRouteUpdate(async (to, from) => {
   if (to.params["id"] !== from.params["id"]) {
     projectId.value = +to.params["id"]!;
-    projectDetail.value = await API.projectInfo({ pid: projectId.value });
-    attachmentDownloadStatus.value = await attachment.getAttachmentStatus(
-      projectId.value,
-    );
+    await updateProjectDetail();
   }
 });
 
-const endTime = computed(() => new Date(projectDetail.value.info.end_time));
+const endTime = computed(() =>
+  projectDetail.value
+    ? new Date(projectDetail.value.info.end_time)
+    : new Date(),
+);
 const isEnded = ref(new Date() > endTime.value);
 
 const refreshing = ref(false);
@@ -165,7 +172,7 @@ const refresh = async () => {
 };
 
 const groups = computed(() => {
-  const detail = projectDetail.value.pre_submit_detail ?? {};
+  const detail = projectDetail.value?.pre_submit_detail ?? {};
   const groupInfo =
     "Passed" in detail ? (detail.Passed as Review.GroupInfo) : undefined;
   if (groupInfo) {
@@ -211,12 +218,12 @@ const getReasonText = (
     case "InvalidName":
       return "名字不合适";
     case "Other":
-      return projectDetail.value.submit_detail?.Rejected.detail ?? "其他原因";
+      return projectDetail.value?.submit_detail?.Rejected.detail ?? "其他原因";
   }
 };
 
 const firstReviewStatus = computed(() => {
-  switch (projectDetail.value.status) {
+  switch (projectDetail.value?.status) {
     case "Entered":
       return "待提交";
     case "PreSubmitted":
@@ -228,7 +235,7 @@ const firstReviewStatus = computed(() => {
   }
 });
 const NDAStatus = computed(() => {
-  switch (projectDetail.value.nda_info) {
+  switch (projectDetail.value?.nda_info) {
     case null:
       return "未签署半保密协议";
     case "Agreed":
@@ -240,7 +247,7 @@ const NDAStatus = computed(() => {
   }
 });
 const formalSubmitStatus = computed(() => {
-  switch (projectDetail.value.status) {
+  switch (projectDetail.value?.status) {
     case "SubmitPassed":
       return "正式提交已通过";
     case "SubmitRejected":
@@ -265,9 +272,9 @@ const mainButton = ref<{
 const currentStep = ref(1);
 
 watch(
-  () => projectDetail.value.status,
+  () => projectDetail.value?.status,
   () => {
-    switch (projectDetail.value.status) {
+    switch (projectDetail.value?.status) {
       case "Entered":
         statusText.value = "已报名";
         statusColor.value = "darkgrey";
@@ -385,7 +392,7 @@ watch(
 );
 
 const showAttachmentButton = computed(
-  () => projectDetail.value.have_attachment,
+  () => projectDetail.value?.have_attachment,
 );
 const attachmentButton = ref<{
   text: string;
@@ -396,9 +403,7 @@ const attachmentButton = ref<{
   loading: false,
   action: () => void downloadAttachment(),
 });
-const attachmentDownloadStatus = ref<AttachmentStatus>(
-  await attachment.getAttachmentStatus(projectId.value),
-);
+const attachmentDownloadStatus = ref<AttachmentStatus>("unstart");
 const downloadAttachment = async () => {
   const abort = new AbortController();
   attachmentButton.value = {

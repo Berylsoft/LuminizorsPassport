@@ -8,7 +8,7 @@
   >
     <view v-if="joined" class="success">
       <view class="success-icon">
-        <Icon name="checkmark-circle" size="25vw" />
+        <Noci name="checkmark-circle" size="25vw" />
       </view>
       <view class="success-text">欢迎加入{{ projectName }}</view>
       <view class="redirect-tips">即将跳转到项目详情页</view>
@@ -54,7 +54,7 @@
 <script setup lang="ts">
 import { ref, watch } from "vue";
 import { useRouter } from "vue-router";
-import Icon from "@/components/Icon.vue";
+import Noci from "@/components/Noci.vue";
 import { useAPI } from "@/composables/api";
 import { sleep } from "@/utils/";
 
@@ -67,12 +67,7 @@ const props = defineProps<{
 const API = useAPI();
 const router = useRouter();
 
-const question = ref(
-  props.projectId === undefined
-    ? undefined
-    : (await API.joinProjectStart({ Start: { pid: props.projectId } })).Start
-        .question,
-);
+const question = ref<string>();
 watch(
   () => props.projectId,
   async (id) => {

@@ -9,7 +9,7 @@
     <view class="swiper">
       <nut-swiper pagination-visible :auto-play="5000">
         <nut-swiper-item v-for="(item, index) in swiperImageList" :key="index">
-          <img :src="item" class="swiper-image" draggable="false" />
+          <image class="swiper-image" lazy-load mode="widthFix" :src="item" />
         </nut-swiper-item>
       </nut-swiper>
     </view>
@@ -25,10 +25,10 @@
           class="grid-item"
           @click="router.push({ name: item.target })"
         >
-          <Icon :name="item.icon" :size="120" color="var(--theme-color)" />
+          <Noci :name="item.icon" :size="120" color="var(--theme-color)" />
         </nut-grid-item>
         <nut-grid-item class="grid-item more" text="敬请期待">
-          <Icon
+          <Noci
             name="more-horizontal"
             :size="120"
             style="color: var(--text-color-secondary) !important"
@@ -42,14 +42,14 @@
 <script setup lang="ts">
 import { ref } from "vue";
 import { useRouter } from "vue-router";
-import img1 from "@/assets/image/2025.jpg";
-import Icon from "@/components/Icon.vue";
+import bannerImage from "@/assets/image/2025.jpg";
+import Noci from "@/components/Noci.vue";
 
 const router = useRouter();
 
 const anouncement = ref("");
 /** @todo get swiper from server */
-const swiperImageList = ref([img1]);
+const swiperImageList = ref([bannerImage]);
 const functions = ref([{ icon: "receipt", text: "征集", target: "recruit" }]);
 </script>
 
@@ -77,8 +77,7 @@ const functions = ref([{ icon: "receipt", text: "征集", target: "recruit" }]);
     height: 400px;
   }
   .swiper-image {
-    width: 100%;
-    height: 100%;
+    width: 720px;
   }
 }
 

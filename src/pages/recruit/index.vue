@@ -23,7 +23,7 @@
             >
               <nut-space direction="vertical" fill :gutter="15">
                 <view class="banner">
-                  <img class="banner-image" :src="img1" :alt="project.name" />
+                  <image class="banner-image" :src="img1" lazy-load />
                 </view>
                 <view class="project-info">
                   <view>
@@ -40,7 +40,7 @@
                   <view class="action">
                     <template v-if="project.joined">
                       <span class="action-text">查看详情</span>
-                      <Icon
+                      <Noci
                         class="action-icon"
                         color="var(--text-color-secondary)"
                         name="chevron-right"
@@ -105,7 +105,7 @@
 
 <script lang="ts" setup>
 import img1 from "@/assets/image/2025.jpg";
-import Icon from "@/components/Icon.vue";
+import Noci from "@/components/Noci.vue";
 import JoinProject from "@/components/JoinProject.vue";
 import { useAPI } from "@/composables/api";
 import { Project } from "@/types";
@@ -147,7 +147,6 @@ const joinProject = (id: number, name: string) => {
 
     .banner-image {
       width: 100%;
-      height: auto;
       border-radius: 20px;
     }
   }
