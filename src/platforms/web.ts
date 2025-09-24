@@ -35,7 +35,7 @@ export const showToast = async ({
   duration?: number;
 }) => {
   await Promise.resolve();
-  _toastState.msg = title.replaceAll(/\n/g, "<br/>");
+  _toastState.msg = title.replace(/\n/g, "<br/>");
   _toastState.type = icon === "error" ? "fail" : (icon ?? "text");
   _toastState.duration = duration ?? 2000;
   _toastState.show = true;

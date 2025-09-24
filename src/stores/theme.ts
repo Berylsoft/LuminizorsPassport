@@ -12,10 +12,10 @@ export const useThemeStore = defineStore(
       _systemTheme.value = theme;
     });
     const theme = ref<Theme>("auto");
-    const getCurrentTheme = computed(() =>
+    const currentTheme = computed(() =>
       theme.value === "auto" ? _systemTheme.value : theme.value,
     );
-    return { theme, getCurrentTheme };
+    return { theme, currentTheme };
   },
   { persist: true },
 );

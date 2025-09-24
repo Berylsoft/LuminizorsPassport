@@ -1,11 +1,9 @@
 <template>
   <a></a>
-  <view :class="['main', `theme-${themeStore.getCurrentTheme}`]">
-    <nut-config-provider :theme="themeStore.getCurrentTheme">
+  <view :class="['main', `theme-${themeStore.currentTheme}`]">
+    <nut-config-provider :theme="themeStore.currentTheme">
       <view class="body">
-        <Suspense>
-          <router-view></router-view>
-        </Suspense>
+        <router-view></router-view>
       </view>
       <view class="tabbar">
         <nut-tabbar
@@ -50,13 +48,20 @@ const router = useRouter();
 const themeStore = useThemeStore();
 
 watch(
-  () => themeStore.getCurrentTheme,
-  async (newTheme) => {
-    await Taro.setBackgroundColor({
-      backgroundColor: newTheme === "dark" ? "#333" : "#fff",
+  () => themeStore.currentTheme,
+  (newTheme) => {
+    Taro.nextTick(() => {
+      void Taro.setBackgroundColor({
+        backgroundColor: newTheme === "dark" ? "#333" : "#fff",
+      });
+      void Taro.setBackgroundTextStyle({ textStyle: newTheme });
+      void Taro.setNavigationBarColor({
+        frontColor: newTheme === "dark" ? "#ffffff" : "#000000",
+        backgroundColor: newTheme === "dark" ? "#000000" : "#ffffff",
+      });
     });
-    await Taro.setBackgroundTextStyle({ textStyle: newTheme });
   },
+  { immediate: true },
 );
 const navList = {
   home: { target: "home", title: "首页", icon: "home" },

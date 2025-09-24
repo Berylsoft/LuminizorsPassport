@@ -72,7 +72,6 @@ export const getNoticificationSubscribeStatus = async (
   ) {
     return "unconfigured";
   } else {
-    console.log(subscriptionsSetting.itemSettings[template]);
     return subscriptionsSetting.itemSettings[template] === "accept"
       ? "enabled"
       : "disabled";
