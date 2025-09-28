@@ -148,3 +148,4 @@ node_modules/
 .DS_Store
 .swc
 *.local
+project.private.config.json

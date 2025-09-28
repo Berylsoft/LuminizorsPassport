@@ -85,7 +85,10 @@ export default defineConfig((merge) => {
         },
       },
       compile: {
-        include: [path.resolve(__dirname, "../luminizors.config.ts")],
+        include: [
+          path.resolve(__dirname, "../luminizors.config.ts"),
+          path.resolve(__dirname, "../node_modules"),
+        ],
       },
       sassLoaderOption: {
         sassOptions: {
@@ -133,7 +136,10 @@ export default defineConfig((merge) => {
         },
       },
       compile: {
-        include: [path.resolve(__dirname, "../luminizors.config.ts")],
+        include: [
+          path.resolve(__dirname, "../luminizors.config.ts"),
+          path.resolve(__dirname, "../node_modules"),
+        ],
       },
       sassLoaderOption: {
         sassOptions: {

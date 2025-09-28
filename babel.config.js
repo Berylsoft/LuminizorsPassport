@@ -6,6 +6,7 @@ module.exports = {
         framework: "vue3",
         ts: true,
         compiler: "webpack5",
+        useBuiltIns: "entry",
       },
     ],
   ],
