@@ -7,6 +7,11 @@ settings:
 overrides:
   eslint: ^9.36.0
 
+patchedDependencies:
+  fast-text-encoding:
+    hash: aa5def7315681c6fb4a01e521f830c235d61a9c8302f1a13711cc10839fc9d78
+    path: patches/fast-text-encoding.patch
+
 importers:
 
   .:
@@ -70,7 +75,7 @@ importers:
         version: 3.45.1
       fast-text-encoding:
         specifier: ^1.0.6
-        version: 1.0.6
+        version: 1.0.6(patch_hash=aa5def7315681c6fb4a01e521f830c235d61a9c8302f1a13711cc10839fc9d78)
       file-type:
         specifier: ^21.0.0
         version: 21.0.0
@@ -10463,7 +10468,7 @@ snapshots:
 
   fast-levenshtein@2.0.6: {}
 
-  fast-text-encoding@1.0.6: {}
+  fast-text-encoding@1.0.6(patch_hash=aa5def7315681c6fb4a01e521f830c235d61a9c8302f1a13711cc10839fc9d78): {}
 
   fast-uri@3.1.0: {}
 
