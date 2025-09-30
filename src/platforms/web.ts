@@ -1,5 +1,4 @@
 /* eslint-disable @typescript-eslint/require-await */
-
 import { reactive } from "vue";
 import type {
   OpenSettingResult,

@@ -65,7 +65,7 @@ const onSelected = async (f: CommonFile) => {
 
 // web
 const inputElement = useTemplateRef<HTMLInputElement | null>("file-input");
-const onInputChange = async () => {
+const onInputChange = /*#__PURE__*/ async () => {
   const inputFile = inputElement.value?.files?.[0];
   if (inputFile) {
     await onSelected(new WebFile(inputFile));
@@ -73,7 +73,7 @@ const onInputChange = async () => {
 };
 
 // weapp
-const chooseFile = async () => {
+const chooseFile = /*#__PURE__*/ async () => {
   if (readonly) return;
   const result = await Taro.chooseMessageFile({
     count: 1,

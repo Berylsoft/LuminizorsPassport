@@ -149,8 +149,9 @@ watch(
 const privacyPolicyName = ref(`隐私政策`);
 const acceptPrivacyPolicy = ref(false);
 const privacyPolicyAuthorize = async () => {
-  if (acceptPrivacyPolicy.value) acceptPrivacyPolicy.value = false;
-  else acceptPrivacyPolicy.value = await platform.requirePrivacyAuthorize();
+  if ((await platform.getPrivacySetting()).needAuthorization)
+    acceptPrivacyPolicy.value = await platform.requirePrivacyAuthorize();
+  else acceptPrivacyPolicy.value = true;
 };
 
 const loginButtonLoading = ref(false);

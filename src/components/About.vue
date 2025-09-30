@@ -7,7 +7,9 @@
     @click-overlay="show = false"
   >
     <view class="logo">
-      <NutAvatar size="large"><img :src="config.logo" /></NutAvatar>
+      <NutAvatar size="large">
+        <image class="logo-image" lazy-load :src="config.logo" />
+      </NutAvatar>
     </view>
     <view class="name">
       <span>{{ config.name }}</span>
@@ -32,6 +34,10 @@ const config = useConfig();
   text-align: center;
   width: 500px;
 
+  .logo-image {
+    width: 100%;
+    height: 100%;
+  }
   .name {
     color: var(--theme-color);
     font-size: 40px;

@@ -1,6 +1,5 @@
 <template>
-  <a></a>
-  <view :class="['main', `theme-${themeStore.currentTheme}`]">
+  <view class="main-content" :class="`theme-${themeStore.currentTheme}`">
     <nut-config-provider :theme="themeStore.currentTheme">
       <view class="body">
         <router-view></router-view>
@@ -28,6 +27,7 @@
       <Login />
       <Toast />
     </nut-config-provider>
+    <a></a>
   </view>
 </template>
 

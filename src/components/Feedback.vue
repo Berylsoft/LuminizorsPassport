@@ -6,7 +6,7 @@
     round
     @click-overlay="show = false"
   >
-    <img class="qrcode" :src="config.feedback.groupQRCode" />
+    <image class="qrcode" lazy-load :src="config.feedback.groupQRCode" />
     <a
       class="group-number"
       @click="platform.setClipboard(config.feedback.groupID)"

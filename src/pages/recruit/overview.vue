@@ -2,7 +2,7 @@
   <nut-cell class="project-overview" size="large" :round-radius="20">
     <nut-space direction="vertical" fill :gutter="15">
       <view class="banner">
-        <img class="banner-image" :src="img1" :alt="projectDetail?.info.name" />
+        <image class="banner-image" lazy-load :src="img1" />
       </view>
       <view class="project-info">
         <view>

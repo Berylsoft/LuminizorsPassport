@@ -1,5 +1,4 @@
 import axios from "axios";
-import "blob.js";
 import { useAPI } from "@/composables/api";
 import { useAttachmentStore } from "@/stores/attachment";
 import { platform } from "@/platforms";
@@ -13,8 +12,8 @@ const getAttachmentStatus = async (
   projectId: number,
 ): Promise<AttachmentStatus> => {
   const attachmentStore = useAttachmentStore();
-  switch (platform.name) {
-    case "web":
+  switch (process.env.TARO_ENV) {
+    case "h5":
       return "unstart";
     default: {
       const attachment = attachmentStore.localAttachments[projectId];
@@ -52,8 +51,8 @@ const downloadAttachment = async (
   const totalLength = Number(res.headers["Content-Length"]);
 
   try {
-    switch (platform.name) {
-      case "web": {
+    switch (process.env.TARO_ENV) {
+      case "h5": {
         const url = URL.createObjectURL(
           new Blob([await readBytesFromStream(stream)]),
         );

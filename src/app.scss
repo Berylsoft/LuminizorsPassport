@@ -1,5 +1,7 @@
-:root {
+.main-content {
+  /* #ifdef WEB */
   color-scheme: light dark;
+  /* #endif */
   width: 100%;
   height: 100%;
 
