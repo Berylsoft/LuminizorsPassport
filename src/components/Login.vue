@@ -110,9 +110,10 @@
 </template>
 
 <script setup lang="ts">
+import Taro from "@tarojs/taro";
 import KonamiCode from "konami-code-js";
 import { ref, watch } from "vue";
-import FormItem from "./FormItem.vue";
+import FormItem from "@/components/FormItem.vue";
 import Noci from "@/components/Noci.vue";
 import { _loginPromises, _showLogin } from "@/composables/account";
 import { useAPI } from "@/composables/api";
@@ -132,16 +133,18 @@ const showLoginAsUI = ref(false);
 const kc = new KonamiCode(() => (showLoginAsUI.value = true));
 watch(
   showLogin,
-  async (show) => {
-    if (show) {
-      kc.enable();
-      const { needAuthorization, privacyContractName } =
-        await platform.getPrivacySetting();
-      privacyPolicyName.value = privacyContractName;
-      acceptPrivacyPolicy.value = !needAuthorization;
-    } else {
-      kc.disable();
-    }
+  (show) => {
+    Taro.nextTick(async () => {
+      if (show) {
+        kc.enable();
+        const { needAuthorization, privacyContractName } =
+          await platform.getPrivacySetting();
+        privacyPolicyName.value = privacyContractName;
+        acceptPrivacyPolicy.value = !needAuthorization;
+      } else {
+        kc.disable();
+      }
+    });
   },
   { immediate: true },
 );
@@ -149,9 +152,8 @@ watch(
 const privacyPolicyName = ref(`隐私政策`);
 const acceptPrivacyPolicy = ref(false);
 const privacyPolicyAuthorize = async () => {
-  if ((await platform.getPrivacySetting()).needAuthorization)
-    acceptPrivacyPolicy.value = await platform.requirePrivacyAuthorize();
-  else acceptPrivacyPolicy.value = true;
+  if (acceptPrivacyPolicy.value) acceptPrivacyPolicy.value = false;
+  else acceptPrivacyPolicy.value = await platform.requirePrivacyAuthorize();
 };
 
 const loginButtonLoading = ref(false);

@@ -92,7 +92,7 @@ onMounted(() => setTitleAndActivatedTab(route.path));
 </script>
 
 <style lang="scss">
-.main {
+.main-content {
   height: 100%;
   width: 100%;
   background-color: var(--background-color);

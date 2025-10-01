@@ -6,14 +6,19 @@
     round
     @click-overlay="show = false"
   >
-    <image class="qrcode" lazy-load :src="config.feedback.groupQRCode" />
+    <image
+      class="qrcode"
+      lazy-load
+      mode="widthFix"
+      :src="config.feedback.groupQRCode"
+    />
     <a
       class="group-number"
       @click="platform.setClipboard(config.feedback.groupID)"
     >
       {{ config.feedback.groupID }}
       <span class="copy-button">
-        <Noci name="copy" />
+        <Noci name="copy" :size="36" />
       </span>
     </a>
   </nut-popup>
@@ -40,6 +45,7 @@ const config = useConfig();
   }
   .group-number {
     color: var(--text-color-primary);
+    font-size: 36px;
     cursor: pointer;
   }
   .copy-button {

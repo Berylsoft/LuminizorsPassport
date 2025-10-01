@@ -1,5 +1,5 @@
 <template>
-  <text
+  <view
     :class="['luminizors-icon', 'nut-icon', name, animateClass]"
     :style="{ color, fontSize: size, width: size, height: size }"
   />

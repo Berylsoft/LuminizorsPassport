@@ -69,9 +69,6 @@ export default defineConfig((merge) => {
     cache: {
       enable: false,
     },
-    sass: {
-      data: '@use "@nutui/nutui-taro/dist/styles/variables-jdt.scss" as *;',
-    },
     mini: {
       postcss: {
         pxtransform: {

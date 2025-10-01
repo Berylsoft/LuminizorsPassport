@@ -1,11 +1,13 @@
 import "core-js";
 import "blob.js";
 import "fast-text-encoding";
+
 import { createPinia } from "pinia";
 import piniaPluginPersistedstate from "pinia-plugin-persistedstate";
 import { createApp } from "vue";
 import { router } from "./router";
 
+import "@nutui/nutui-taro/dist/styles/variables-jdt.scss";
 import "./app.scss";
 import "./assets/iconfont/iconfont.css";
 
