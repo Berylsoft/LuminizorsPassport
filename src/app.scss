@@ -10,11 +10,12 @@
   --theme-color-light: #e5f5b5;
 
   // overwrite styles of nut-tabbar
+  .nut-tabbar {
+    border: none;
+  }
   .nut-tabbar__placeholder {
     display: block;
     background-color: var(--background-color);
-    /* prettier-ignore */
-    height: 45Px !important;
   }
 }
 
