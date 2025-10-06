@@ -1,13 +1,8 @@
 import axios from "axios";
 import { useAPI } from "@/composables/api";
-import { platform } from "@/platforms";
+import { type CommonFile, platform } from "@/platforms";
 import { File } from "@/types";
-import {
-  type CommonFile,
-  getErrMsg,
-  toLowerCase,
-  uint8ArrayToHex,
-} from "@/utils";
+import { getErrMsg, toLowerCase, uint8ArrayToHex } from "@/utils";
 
 const API = useAPI();
 

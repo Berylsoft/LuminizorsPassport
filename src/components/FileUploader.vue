@@ -47,9 +47,9 @@ import FileChooser from "@/components/FileChooser.vue";
 import Noci from "@/components/Noci.vue";
 import { useConfig } from "@/composables/config";
 import { UploadError, useUpload } from "@/composables/upload";
-import { platform } from "@/platforms";
+import { type CommonFile, platform } from "@/platforms";
 import { File } from "@/types";
-import { type CommonFile, humanizeBytes } from "@/utils";
+import { humanizeBytes } from "@/utils";
 
 const file = defineModel<File.FileUpload>({ required: true });
 

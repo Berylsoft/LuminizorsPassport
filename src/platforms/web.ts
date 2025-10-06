@@ -1,9 +1,12 @@
 /* eslint-disable @typescript-eslint/require-await */
+import { fileTypeFromBlob, type FileTypeResult } from "file-type";
+import { md5 } from "hash-wasm";
 import { reactive } from "vue";
-import type {
-  OpenSettingResult,
-  SubscribeNotificationResult,
-  SubscribeStatus,
+import {
+  CommonFile,
+  type OpenSettingResult,
+  type SubscribeNotificationResult,
+  type SubscribeStatus,
 } from "./types";
 import { useConfig } from "@/composables/config";
 import { sleep } from "@/utils";
@@ -11,6 +14,41 @@ import { sleep } from "@/utils";
 const config = useConfig();
 
 export const name = "web";
+
+type BrowserFile = globalThis.File;
+
+export class File extends CommonFile {
+  private file: BrowserFile;
+  private type: FileTypeResult | undefined;
+  private md5: string | undefined;
+
+  public readonly name: string;
+  public readonly size: number;
+  constructor(file: BrowserFile) {
+    super();
+    this.file = file;
+    this.name = file.name;
+    this.size = file.size;
+  }
+
+  public async getType() {
+    return (this.type ??= await fileTypeFromBlob(this.file));
+  }
+
+  public async getMD5() {
+    return (this.md5 ??= await md5(await this.file.bytes()));
+  }
+
+  public readBytes(offset: number, length?: number) {
+    return this.file
+      .slice(offset, length ? offset + length : this.size)
+      .arrayBuffer();
+  }
+
+  public toBlob() {
+    return Promise.resolve(this.file);
+  }
+}
 
 /** @private */
 export const _toastState = reactive<{

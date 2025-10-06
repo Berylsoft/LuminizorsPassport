@@ -27,8 +27,7 @@
 <script setup lang="ts">
 import Taro from "@tarojs/taro";
 import { computed, useTemplateRef } from "vue";
-import { platform } from "@/platforms";
-import { type CommonFile, WebFile, TaroFSFile } from "@/utils";
+import { type CommonFile, platform } from "@/platforms";
 
 const file = defineModel<CommonFile | undefined>({ required: true });
 const {
@@ -66,15 +65,16 @@ const onSelected = async (f: CommonFile) => {
 // web
 const inputElement = useTemplateRef<HTMLInputElement | null>("file-input");
 const onInputChange = /*#__PURE__*/ async () => {
+  if (platform.name !== "web") return;
   const inputFile = inputElement.value?.files?.[0];
   if (inputFile) {
-    await onSelected(new WebFile(inputFile));
+    await onSelected(new platform.File(inputFile));
   }
 };
 
 // weapp
 const chooseFile = /*#__PURE__*/ async () => {
-  if (readonly) return;
+  if (platform.name !== "weapp" || readonly) return;
   const result = await Taro.chooseMessageFile({
     count: 1,
     type: "file",
@@ -85,7 +85,7 @@ const chooseFile = /*#__PURE__*/ async () => {
   });
   const file = result.tempFiles[0];
   if (file) {
-    await onSelected(new TaroFSFile(file));
+    await onSelected(new platform.File(file));
   }
 };
 </script>

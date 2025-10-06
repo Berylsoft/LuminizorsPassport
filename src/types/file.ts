@@ -1,5 +1,5 @@
 import type { UpperCaseMethod } from "@/composables/api";
-import type { CommonFile } from "@/utils";
+import type { CommonFile } from "@/platforms";
 
 export namespace File {
   export interface PresignedRequest<T extends UpperCaseMethod> {

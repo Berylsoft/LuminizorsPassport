@@ -1,4 +1,8 @@
-export interface Platform {
+import type { FileTypeResult } from "file-type";
+import type { File as TaroFSFile } from "./weapp";
+import type { File as WebFile } from "./web";
+
+export interface CommonAPI {
   name: Lowercase<TaroGeneral.ENV_TYPE>;
   showToast(options: {
     title: string;
@@ -20,6 +24,33 @@ export interface Platform {
     templates: string[],
   ): Promise<SubscribeNotificationResult>;
   login(): Promise<string>;
+}
+
+export type PlatformSpecificAPI =
+  | {
+      name: Lowercase<TaroGeneral.ENV_TYPE.WEAPP>;
+      File: typeof TaroFSFile;
+    }
+  | {
+      name: Lowercase<TaroGeneral.ENV_TYPE.WEB>;
+      File: typeof WebFile;
+    };
+
+export type Platform = CommonAPI & PlatformSpecificAPI;
+
+export abstract class CommonFile {
+  public abstract readonly name: string;
+  public abstract readonly size: number;
+
+  public abstract getType(): Promise<FileTypeResult | undefined>;
+  public abstract getMD5(): Promise<string>;
+
+  public abstract readBytes(
+    offset: number,
+    length?: number,
+  ): Promise<ArrayBuffer>;
+
+  public abstract toBlob(): Promise<Blob>;
 }
 
 export interface GetPrivacySettingResult {

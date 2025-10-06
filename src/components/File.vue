@@ -18,10 +18,10 @@
 </template>
 
 <script setup lang="ts">
-import { computed, ref, watch } from "vue";
 import Taro from "@tarojs/taro";
+import { computed, ref, watch } from "vue";
 import Noci from "@/components/Noci.vue";
-import type { CommonFile } from "@/utils";
+import type { CommonFile } from "@/platforms";
 
 const {
   file = undefined,

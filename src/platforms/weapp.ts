@@ -1,12 +1,67 @@
 import Taro from "@tarojs/taro";
+import { fileTypeFromStream, type FileTypeResult } from "file-type";
 import {
-  OpenSettingResult,
-  SubscribeNotificationResult,
-  SubscribeStatus,
+  CommonFile,
+  type OpenSettingResult,
+  type SubscribeNotificationResult,
+  type SubscribeStatus,
 } from "./types";
-import { promisify } from "@/utils";
+import { createReadableStream, promisify, TaroFS } from "@/utils";
 
 export const name = "weapp";
+
+export class File extends CommonFile {
+  private path: string;
+  private type: FileTypeResult | undefined;
+  private md5: string | undefined;
+
+  public readonly name: string;
+  public readonly size: number;
+  constructor(options: { name: string; path: string; size: number }) {
+    super();
+    this.name = options.name;
+    this.size = options.size;
+    this.path = options.path;
+  }
+
+  public async getType() {
+    if (this.type) return this.type;
+    const stream = createReadableStream(this.path);
+    try {
+      this.type = await fileTypeFromStream(stream);
+      return this.type;
+    } finally {
+      await stream.cancel();
+    }
+  }
+
+  public async getMD5() {
+    return (this.md5 ??= (
+      await TaroFS.getFileInfo({
+        filePath: this.path,
+        digestAlgorithm: "md5",
+      })
+    ).digest!);
+  }
+
+  public async readBytes(offset: number, length?: number) {
+    const { data } = await TaroFS.readFile({
+      filePath: this.path,
+      encoding: "binary",
+      position: offset,
+      ...(length === undefined ? {} : { length }),
+    });
+    return data as ArrayBuffer;
+  }
+
+  public async toBlob() {
+    const { data } = await TaroFS.readFile({
+      filePath: this.path,
+      encoding: "binary",
+    });
+    return new Blob([data]);
+  }
+}
 
 export const showToast = async (options: {
   title: string;
